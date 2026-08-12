@@ -70,6 +70,7 @@ src/
     HorizonView.tsx            orizzonte marino, Sole basso, altezza in gradi
     EclipseTimeline.tsx        le cinque fasi con orari locali
     SafetyNotice.tsx           pill di sicurezza persistente + Drawer con le regole
+    EclipseDial.tsx            disco Sole/Luna dal vivo accanto al countdown
     LiveGuide.tsx              riquadro live sotto il countdown: occhiali sì/no + passo corrente
     TotalityScript.tsx         i 76 secondi, passo per passo, con step live
     PhenomenaGuide.tsx         glossario dei fenomeni: cosa sono e come riconoscerli
@@ -85,6 +86,7 @@ src/
     time.ts                    fasi → istanti UTC, stato temporale, countdown
     sun.ts                     posizione solare (NOAA low-precision)
     weather.ts                 seam per una futura API meteo
+    eclipseGeometry.ts         transito della Luna e frazione di Sole coperta
     totality.ts                logica condivisa della scaletta dei 76 secondi
     i18n.ts                    dizionari IT / ES
     utils.ts                   cn() di shadcn
@@ -93,9 +95,28 @@ src/
 scripts/
   generate-icons.mjs           icone PWA come PNG reali, senza dipendenze
   verify-sky.mjs               ricalcola le posizioni di pianeti e stelle
+  verify-dial.mjs              rende il quadrante in PNG per un controllo visivo
 public/
   manifest.webmanifest, sw.js, icons/
 ```
+
+## Il quadrante Sole/Luna
+
+Accanto al countdown c'è un disco che mostra dal vivo quanto Sole è coperto, con la percentuale
+sotto. Non è un'illustrazione: ogni posizione viene dall'orologio tramite `src/lib/eclipseGeometry.ts`,
+che modella la Luna come un disco di raggio 1,04 che attraversa il Sole lungo una traiettoria retta.
+
+I quattro contatti cadono **esatti** (0% → 100% → 100% → 0% ai secondi pubblicati), perché la
+posizione è interpolata fra i cinque istanti noti invece di usare una velocità costante: l'eclissi
+reale è asimmetrica, 56 minuti di parzialità prima del massimo e 54 dopo. Il Sole è disegnato con
+una maschera SVG, così la parte coperta diventa davvero trasparente e lascia vedere il vetro dietro.
+
+`npm run verify:dial` produce una striscia PNG con otto fasi, per controllare a occhio una grafica
+che altrimenti non si potrebbe verificare. La cosa da guardare: il morso parte da un lato, passa per
+la corona, e si riapre **dal lato opposto**. La Luna attraversa, non torna indietro.
+
+La stessa geometria alimenta l'orizzonte marino nel tab *Ora*, dove prima la Luna rientrava dal lato
+da cui era arrivata. La direzione di transito è schematica; tempi e copertura sono esatti.
 
 ## Il riquadro live
 

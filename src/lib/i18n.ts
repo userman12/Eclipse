@@ -175,6 +175,10 @@ const it = {
     places: 'Luoghi',
   },
 
+  dial: {
+    covered: 'Coperto',
+  },
+
   script: {
     title: 'I 76 secondi',
     subtitle:
@@ -541,6 +545,10 @@ const es: Dict = {
     totality: 'Totalidad',
     sky: 'Cielo',
     places: 'Lugares',
+  },
+
+  dial: {
+    covered: 'Cubierto',
   },
 
   script: {

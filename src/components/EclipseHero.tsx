@@ -7,6 +7,7 @@ import { Progress } from '@/components/ui/progress';
 import GlassCard, { revealVariants } from '@/components/GlassCard';
 import Countdown from '@/components/Countdown';
 import ContextualStatus from '@/components/ContextualStatus';
+import EclipseDial from '@/components/EclipseDial';
 import LiveGuide from '@/components/LiveGuide';
 import { eclipseEvent } from '@/data/eventData';
 import { useCopy } from '@/lib/LanguageProvider';
@@ -73,16 +74,25 @@ export default function EclipseHero({
 
       <GlassCard live>
         <CardContent>
-          {state.target ? (
-            <Countdown
-              ms={state.msToTarget}
-              tone={tones[state.stage]}
-              label={countdownLabel}
-              targetTime={state.target.time}
-            />
-          ) : (
-            <p className="text-muted-foreground font-display py-2 text-2xl">{t.countdown.done}</p>
-          )}
+          <div className="flex items-start justify-between gap-3">
+            <div className="min-w-0 flex-1">
+              {state.target ? (
+                <Countdown
+                  ms={state.msToTarget}
+                  tone={tones[state.stage]}
+                  label={countdownLabel}
+                  targetTime={state.target.time}
+                />
+              ) : (
+                <p className="text-muted-foreground font-display py-2 text-2xl">
+                  {t.countdown.done}
+                </p>
+              )}
+            </div>
+
+            {/* Live Sun/Moon geometry, driven by the same clock as the countdown. */}
+            <EclipseDial state={state} />
+          </div>
 
           <Progress
             value={state.progress * 100}

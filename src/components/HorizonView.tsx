@@ -6,10 +6,11 @@ import { Badge } from '@/components/ui/badge';
 import { CardAction, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import GlassCard from '@/components/GlassCard';
 import { eclipseEvent } from '@/data/eventData';
+import { impactParameter, moonTrackX } from '@/lib/eclipseGeometry';
 import { fistsAboveHorizon } from '@/lib/sun';
 import { fill } from '@/lib/i18n';
 import { useCopy } from '@/lib/LanguageProvider';
-import { T, type EclipseState } from '@/lib/time';
+import type { EclipseState } from '@/lib/time';
 
 const W = 320;
 const H = 190;
@@ -18,6 +19,8 @@ const TOP_ALT = 35; // degrees mapped to the top of the frame
 const SUN_X = 208;
 const SUN_R = 17;
 const MOON_R = SUN_R * 1.04; // a total eclipse: the Moon is slightly larger
+/** Vertical offset of the Moon's track, from the shared geometry. */
+const MOON_TRACK_Y = impactParameter() * SUN_R;
 
 const altToY = (alt: number) =>
   HORIZON_Y - (Math.max(0, Math.min(TOP_ALT, alt)) / TOP_ALT) * (HORIZON_Y - 26);
@@ -30,19 +33,6 @@ const sky = {
   'partial-falling': ['#123A52', '#24506A'],
   after: ['#0A2436', '#143B52'],
 } as const;
-
-/**
- * Moon–Sun centre separation in SVG units, derived from the clock.
- * (Purely illustrative geometry: it conveys the phase, it is not a chart.)
- */
-function separationAt(now: number): number {
-  const maxSeparation = SUN_R + MOON_R;
-  if (now <= T.partialStart || now >= T.partialEnd) return maxSeparation;
-  if (now < T.maximum) {
-    return maxSeparation * (1 - (now - T.partialStart) / (T.maximum - T.partialStart));
-  }
-  return maxSeparation * ((now - T.maximum) / (T.partialEnd - T.maximum));
-}
 
 export default function HorizonView({
   state,
@@ -58,7 +48,8 @@ export default function HorizonView({
   const [skyTop, skyBottom] = sky[state.stage];
 
   const sunY = altToY(altitude);
-  const separation = separationAt(state.now);
+  // Signed: the Moon enters on one side and leaves on the other.
+  const moonOffsetX = moonTrackX(state.now) * SUN_R;
   const isTotal = state.stage === 'totality';
   const belowHorizon = altitude < 0;
 
@@ -182,9 +173,9 @@ export default function HorizonView({
                   r={SUN_R}
                   fill="#FFD66B"
                 />
-                {/* The Moon, sliding across */}
+                {/* The Moon, crossing the disk along its real track */}
                 <motion.circle
-                  animate={{ cx: SUN_X + separation, cy: sunY - separation * 0.25 }}
+                  animate={{ cx: SUN_X + moonOffsetX, cy: sunY + MOON_TRACK_Y }}
                   transition={{ type: 'spring', stiffness: 40, damping: 22 }}
                   r={MOON_R}
                   fill={isTotal ? '#04121C' : skyTop}

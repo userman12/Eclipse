@@ -5,7 +5,7 @@ import { TriangleAlert } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { CardAction, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import GlassCard from '@/components/GlassCard';
-import { eclipseEvent } from '@/data/eventData';
+import type { City } from '@/data/cities';
 import { impactParameter, moonTrackX } from '@/lib/eclipseGeometry';
 import { fistsAboveHorizon } from '@/lib/sun';
 import { fill } from '@/lib/i18n';
@@ -18,9 +18,7 @@ const HORIZON_Y = 142;
 const TOP_ALT = 35; // degrees mapped to the top of the frame
 const SUN_X = 208;
 const SUN_R = 17;
-const MOON_R = SUN_R * 1.04; // a total eclipse: the Moon is slightly larger
-/** Vertical offset of the Moon's track, from the shared geometry. */
-const MOON_TRACK_Y = impactParameter() * SUN_R;
+const MOON_R = SUN_R * 1.04; // slightly larger than the Sun
 
 const altToY = (alt: number) =>
   HORIZON_Y - (Math.max(0, Math.min(TOP_ALT, alt)) / TOP_ALT) * (HORIZON_Y - 26);
@@ -35,10 +33,12 @@ const sky = {
 } as const;
 
 export default function HorizonView({
+  city,
   state,
   altitude,
   isLive,
 }: {
+  city: City;
   state: EclipseState;
   /** Sun altitude in degrees — live during the eclipse, at maximum otherwise. */
   altitude: number;
@@ -49,7 +49,8 @@ export default function HorizonView({
 
   const sunY = altToY(altitude);
   // Signed: the Moon enters on one side and leaves on the other.
-  const moonOffsetX = moonTrackX(state.now) * SUN_R;
+  const moonOffsetX = moonTrackX(city, state.now) * SUN_R;
+  const moonTrackY = impactParameter(city) * SUN_R;
   const isTotal = state.stage === 'totality';
   const belowHorizon = altitude < 0;
 
@@ -175,7 +176,7 @@ export default function HorizonView({
                 />
                 {/* The Moon, crossing the disk along its real track */}
                 <motion.circle
-                  animate={{ cx: SUN_X + moonOffsetX, cy: sunY + MOON_TRACK_Y }}
+                  animate={{ cx: SUN_X + moonOffsetX, cy: sunY + moonTrackY }}
                   transition={{ type: 'spring', stiffness: 40, damping: 22 }}
                   r={MOON_R}
                   fill={isTotal ? '#04121C' : skyTop}
@@ -239,8 +240,8 @@ export default function HorizonView({
         </p>
         <p className="text-muted-foreground/70 text-xs">
           {fill(t.horizon.atMax, {
-            alt: eclipseEvent.direction.altitudeAtMaximum,
-            az: eclipseEvent.direction.azimuth,
+            alt: city.sunAtMax.altitude,
+            az: city.sunAtMax.azimuth,
           })}
         </p>
       </CardContent>

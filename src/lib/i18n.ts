@@ -1,12 +1,12 @@
 /**
- * Minimal two-language dictionary (no i18n library).
- * Italian is the default UI language; Spanish is available because the app is
- * meant to be used on the ground in A Coruña.
+ * Minimal three-language dictionary (no i18n library).
+ * Italian is the default UI language; Spanish and English are available
+ * because the app is used across 16 cities in six countries.
  */
 
-export type Lang = 'it' | 'es';
+export type Lang = 'it' | 'es' | 'en';
 
-export const LANGS: Lang[] = ['it', 'es'];
+export const LANGS: Lang[] = ['it', 'es', 'en'];
 
 const it = {
   appName: 'Coruña Eclipse Navigator',
@@ -31,6 +31,12 @@ const it = {
       'TOTALITÀ. Il Sole è completamente coperto. Puoi togliere gli occhiali solo durante questa fase.',
     'partial-falling': 'Rimetti subito gli occhiali certificati: il Sole è tornato visibile.',
     after: 'L’eclissi è terminata.',
+    // Used instead of 'partial-falling' above when the city never reaches
+    // totality: nothing was removed, so "rimetti" (put back on) would be
+    // false. The eclipse is simply past its peak and still ongoing.
+    partialFallingOnly: 'L’eclissi ha superato il massimo e sta calando. Occhiali sempre indossati.',
+    neverTotalReminder:
+      'In questa città l’eclissi resta parziale: il Sole non sarà mai completamente coperto, quindi gli occhiali restano obbligatori per tutta la durata.',
   },
 
   countdown: {
@@ -83,8 +89,9 @@ const it = {
 
   timeline: {
     title: 'Fasi dell’eclissi',
-    subtitle: 'Orari locali di A Coruña (Europe/Madrid)',
+    subtitle: 'Orari locali di {city} ({timezone})',
     totalityDuration: 'Durata della totalità: {n} secondi',
+    maxCoverage: 'Copertura massima del Sole: {n}%',
     now: 'adesso',
     done: 'passata',
     next: 'prossima',
@@ -141,12 +148,23 @@ const it = {
     },
     fallbackTitle: 'Se il tuo punto è coperto',
     fallbackSteps: [
-      'Il Sole sarà a soli 12° di altezza: un edificio di 20 m copre il Sole fino a circa 95 m di distanza.',
-      'Spostati verso il mare o guadagna quota: la costa a Ovest è la scelta più sicura.',
+      'Il Sole sarà molto basso: un edificio di 20 m può coprirlo fino a un centinaio di metri di distanza.',
+      'Spostati verso uno spazio aperto o guadagna quota: un parco, un tetto, una collina.',
       'Controlla l’orizzonte già un’ora prima, con il Sole ancora più alto: se lo perdi di vista, cambia posto adesso.',
       'Meglio un punto banale ma libero che un punto scenografico con un ostacolo davanti.',
     ],
     distance: 'a ~{n} km dal centro',
+
+    // Generic fallback shown for every city except A Coruña, which has
+    // curated named spots instead — see the strings above.
+    genericTitle: 'Dove guardare',
+    genericSubtitle: 'Direzione da cercare: {dir}, azimut {az}°',
+    genericBody:
+      'Non abbiamo punti verificati per questa città, quindi non li inventiamo. Cerca un luogo con vista libera nella direzione indicata: un parco, un tetto accessibile, un argine, una collina. Quello che conta è l’assenza di edifici o alberi lungo la linea di vista.',
+    searchViewpoint: 'punto panoramico',
+    searchViewpointCta: 'Cerca punti panoramici',
+    searchOpenSpace: 'parco',
+    searchOpenSpaceCta: 'Cerca parchi e spazi aperti',
   },
 
   weather: {
@@ -305,7 +323,7 @@ const it = {
   sky: {
     title: 'Il cielo durante la totalità',
     subtitle:
-      'Con il Sole coperto il cielo scende a una luminosità da crepuscolo e compaiono pianeti e stelle luminose. Posizioni calcolate per il massimo, le 20:28:13.',
+      'Con il Sole coperto il cielo scende a una luminosità da crepuscolo e compaiono pianeti e stelle luminose. Posizioni calcolate per il massimo, le {time}.',
     mapTitle: 'Cielo a Ovest al massimo',
     mapHint: 'Vista verso Ovest, dall’orizzonte a 45° di altezza.',
     eclipsedSun: 'Sole eclissato',
@@ -322,7 +340,7 @@ const it = {
     stars: 'Stelle luminose',
     objects: {
       venus: { name: 'Venere', note: 'Il più facile in assoluto: alto a Sud-Ovest e molto brillante. Lo vedrai anche prima della totalità.' },
-      jupiter: { name: 'Giove', note: 'A soli 10° dal Sole eclissato, poco sotto a destra. Invisibile in qualsiasi altra sera di agosto.' },
+      jupiter: { name: 'Giove', note: 'Vicinissimo al Sole eclissato. Invisibile in qualsiasi altra sera di agosto.' },
       mercury: { name: 'Mercurio', note: 'Basso, appena sopra l’orizzonte a destra del Sole. Serve un orizzonte marino perfettamente pulito.' },
       arcturus: { name: 'Arturo', note: 'La stella più luminosa del cielo in quel momento, quasi allo zenit verso Sud-Ovest.' },
       vega: { name: 'Vega', note: 'Alta a Est, vertice del Triangolo Estivo. Ti devi girare completamente.' },
@@ -330,7 +348,7 @@ const it = {
       spica: { name: 'Spica', note: 'A Sud-Ovest, sotto Arturo: la stella principale della Vergine.' },
       antares: { name: 'Antares', note: 'Rossastra, bassa a Sud: il cuore dello Scorpione.' },
       deneb: { name: 'Deneb', note: 'A Nord-Est, nel Cigno: il vertice più lontano del Triangolo Estivo.' },
-      regulus: { name: 'Regolo', note: 'A 10° dal Sole, appena sopra: in agosto il Sole attraversa il Leone, quindi normalmente è invisibile.' },
+      regulus: { name: 'Regolo', note: 'Molto vicino al Sole: in agosto il Sole attraversa il Leone, quindi normalmente è invisibile.' },
     },
   },
 
@@ -346,7 +364,9 @@ const it = {
       astronomicalEnd: 'Buio astronomico',
     },
     twilightNote:
-      'Dalle 23:32 il cielo è completamente buio: da quel momento in poi le condizioni sono le migliori possibili.',
+      'Dalle {time} il cielo è completamente buio: da quel momento in poi le condizioni sono le migliori possibili.',
+    neverFullyDark:
+      'A questa latitudine e in questo periodo il cielo non diventa mai completamente buio: resta un chiarore basso a Nord per tutta la notte.',
     perseidsTitle: 'Perseidi al picco, senza Luna',
     perseidsBody:
       'Un’eclissi di Sole avviene per definizione con la Luna nuova. Significa che la notte del picco delle Perseidi non ha nemmeno un filo di luce lunare: è la combinazione migliore che si possa avere.',
@@ -356,7 +376,7 @@ const it = {
     moonLabel: 'Illuminazione lunare',
     radiantTitle: 'Altezza del radiante',
     radiantNote:
-      'Il radiante è in Perseo, a Nord-Est, e da A Coruña non tramonta mai. Più sale, più meteore vedi: le ore migliori sono dopo l’una.',
+      'Il radiante è in Perseo, a Nord-Est, e da {city} non tramonta mai. Più sale, più meteore vedi: le ore migliori sono dopo l’una.',
     bestWindow: 'Ore migliori',
     bestWindowValue: 'dall’01:00 all’alba',
     tipsTitle: 'Per le Perseidi',
@@ -370,12 +390,57 @@ const it = {
 
   footer: {
     offline: 'Funziona offline: i dati dell’eclissi sono salvati nell’app.',
-    disclaimer:
-      'Orari calcolati per A Coruña (43.3623, −8.4115). Verifica sempre le condizioni reali sul posto.',
+    disclaimer: 'Orari calcolati per {city} ({lat}, {lng}). Verifica sempre le condizioni reali sul posto.',
     timezoneWarning:
-      'Il telefono non è sull’orario di Madrid: tutti gli orari mostrati sono comunque quelli locali di A Coruña.',
+      'Il telefono non è sull’orario di {city}: tutti gli orari mostrati sono comunque quelli locali della città selezionata.',
     sources:
-      'Posizioni di pianeti e stelle calcolate per il massimo dell’eclissi da A Coruña. Rigenerabili con "npm run verify:sky".',
+      'Orari, posizioni del Sole, pianeti e crepuscolo calcolati e verificati per ogni città con gli script in scripts/verify-*.mjs.',
+  },
+
+  cityPicker: {
+    title: 'Scegli una città',
+    subtitle:
+      'Solo città dove l’eclissi del 12 agosto è davvero visibile: altrove non c’è nulla da vedere quel giorno.',
+    totalGroup: 'Eclissi totale',
+    partialGroup: 'Eclissi parziale',
+    scopeNote:
+      'La maggior parte delle grandi città del mondo non vede nulla il 12 agosto 2026: l’eclissi è visibile solo lungo una fascia stretta tra Artico, Groenlandia, Islanda ed Europa. Per questo l’elenco è limitato a queste 16 città.',
+  },
+
+  eclipseTitle: {
+    total: 'Eclissi totale di Sole',
+    partial: 'Eclissi parziale di Sole',
+  },
+
+  partialNotice: {
+    eyebrow: 'Non applicabile qui',
+    totality: {
+      title: 'Qui non c’è totalità',
+      body: 'La sequenza dei 76 secondi e i fenomeni come corona, anello di diamante e cromosfera esistono solo quando il Sole è completamente coperto. Da {city} l’eclissi resta parziale, con una copertura massima del {magnitude}%: il Sole non sarà mai coperto del tutto, quindi non c’è una sequenza da seguire. Tieni gli occhiali per tutta la durata.',
+    },
+    sky: {
+      title: 'Il cielo non si scurisce abbastanza',
+      body: 'Pianeti e stelle diventano visibili solo quando il disco solare è completamente coperto e il cielo scende a una luminosità da crepuscolo. Da {city}, dove l’eclissi resta parziale (massimo {magnitude}% di copertura), il cielo resta troppo chiaro perché questo accada.',
+    },
+  },
+
+  cities: {
+    'a-coruna': { name: 'A Coruña', country: 'Spagna' },
+    reykjavik: { name: 'Reykjavík', country: 'Islanda' },
+    valencia: { name: 'Valencia', country: 'Spagna' },
+    zaragoza: { name: 'Saragozza', country: 'Spagna' },
+    bilbao: { name: 'Bilbao', country: 'Spagna' },
+    palma: { name: 'Palma di Maiorca', country: 'Spagna' },
+    madrid: { name: 'Madrid', country: 'Spagna' },
+    lisbon: { name: 'Lisbona', country: 'Portogallo' },
+    dublin: { name: 'Dublino', country: 'Irlanda' },
+    paris: { name: 'Parigi', country: 'Francia' },
+    london: { name: 'Londra', country: 'Regno Unito' },
+    brussels: { name: 'Bruxelles', country: 'Belgio' },
+    amsterdam: { name: 'Amsterdam', country: 'Paesi Bassi' },
+    berlin: { name: 'Berlino', country: 'Germania' },
+    stockholm: { name: 'Stoccolma', country: 'Svezia' },
+    rome: { name: 'Roma', country: 'Italia' },
   },
 };
 
@@ -403,6 +468,9 @@ const es: Dict = {
       'TOTALIDAD. El Sol está completamente cubierto. Solo puedes quitarte las gafas durante esta fase.',
     'partial-falling': 'Vuelve a ponerte las gafas certificadas: el Sol es visible de nuevo.',
     after: 'El eclipse ha terminado.',
+    partialFallingOnly: 'El eclipse ha superado el máximo y está disminuyendo. Gafas siempre puestas.',
+    neverTotalReminder:
+      'En esta ciudad el eclipse sigue siendo parcial: el Sol nunca quedará completamente cubierto, así que las gafas son obligatorias durante todo el evento.',
   },
 
   countdown: {
@@ -455,8 +523,9 @@ const es: Dict = {
 
   timeline: {
     title: 'Fases del eclipse',
-    subtitle: 'Horas locales de A Coruña (Europe/Madrid)',
+    subtitle: 'Horas locales de {city} ({timezone})',
     totalityDuration: 'Duración de la totalidad: {n} segundos',
+    maxCoverage: 'Cobertura máxima del Sol: {n}%',
     now: 'ahora',
     done: 'pasada',
     next: 'siguiente',
@@ -513,12 +582,21 @@ const es: Dict = {
     },
     fallbackTitle: 'Si tu punto está cubierto',
     fallbackSteps: [
-      'El Sol estará a solo 12° de altura: un edificio de 20 m lo tapa hasta unos 95 m de distancia.',
-      'Muévete hacia el mar o gana altura: la costa oeste es la opción más segura.',
+      'El Sol estará muy bajo: un edificio de 20 m puede taparlo hasta un centenar de metros de distancia.',
+      'Muévete a un espacio abierto o gana altura: un parque, un tejado, una colina.',
       'Comprueba el horizonte una hora antes, con el Sol más alto: si lo pierdes de vista, cambia de sitio ya.',
       'Mejor un punto anodino pero despejado que uno espectacular con un obstáculo delante.',
     ],
     distance: 'a ~{n} km del centro',
+
+    genericTitle: 'Dónde mirar',
+    genericSubtitle: 'Dirección a buscar: {dir}, azimut {az}°',
+    genericBody:
+      'No tenemos puntos verificados para esta ciudad, así que no los inventamos. Busca un lugar con vista despejada en la dirección indicada: un parque, una azotea accesible, un dique, una colina. Lo que importa es que no haya edificios ni árboles en la línea de visión.',
+    searchViewpoint: 'mirador',
+    searchViewpointCta: 'Buscar miradores',
+    searchOpenSpace: 'parque',
+    searchOpenSpaceCta: 'Buscar parques y espacios abiertos',
   },
 
   weather: {
@@ -677,7 +755,7 @@ const es: Dict = {
   sky: {
     title: 'El cielo durante la totalidad',
     subtitle:
-      'Con el Sol cubierto el cielo baja a un brillo de crepúsculo y aparecen planetas y estrellas brillantes. Posiciones calculadas para el máximo, las 20:28:13.',
+      'Con el Sol cubierto el cielo baja a un brillo de crepúsculo y aparecen planetas y estrellas brillantes. Posiciones calculadas para el máximo, las {time}.',
     mapTitle: 'Cielo al Oeste en el máximo',
     mapHint: 'Vista hacia el Oeste, desde el horizonte hasta 45° de altura.',
     eclipsedSun: 'Sol eclipsado',
@@ -694,7 +772,7 @@ const es: Dict = {
     stars: 'Estrellas brillantes',
     objects: {
       venus: { name: 'Venus', note: 'El más fácil con diferencia: alto al Suroeste y muy brillante. Lo verás incluso antes de la totalidad.' },
-      jupiter: { name: 'Júpiter', note: 'A solo 10° del Sol eclipsado, algo por debajo y a la derecha. Invisible cualquier otra noche de agosto.' },
+      jupiter: { name: 'Júpiter', note: 'Muy cerca del Sol eclipsado. Invisible cualquier otra noche de agosto.' },
       mercury: { name: 'Mercurio', note: 'Bajo, apenas sobre el horizonte a la derecha del Sol. Necesita un horizonte marino perfectamente limpio.' },
       arcturus: { name: 'Arturo', note: 'La estrella más brillante del cielo en ese momento, casi en el cenit hacia el Suroeste.' },
       vega: { name: 'Vega', note: 'Alta al Este, vértice del Triángulo de Verano. Tienes que darte la vuelta del todo.' },
@@ -702,7 +780,7 @@ const es: Dict = {
       spica: { name: 'Spica', note: 'Al Suroeste, bajo Arturo: la estrella principal de Virgo.' },
       antares: { name: 'Antares', note: 'Rojiza, baja al Sur: el corazón de Escorpio.' },
       deneb: { name: 'Deneb', note: 'Al Noreste, en el Cisne: el vértice más lejano del Triángulo de Verano.' },
-      regulus: { name: 'Régulo', note: 'A 10° del Sol, justo encima: en agosto el Sol atraviesa Leo, así que normalmente es invisible.' },
+      regulus: { name: 'Régulo', note: 'Muy cerca del Sol: en agosto el Sol atraviesa Leo, así que normalmente es invisible.' },
     },
   },
 
@@ -718,7 +796,9 @@ const es: Dict = {
       astronomicalEnd: 'Oscuridad astronómica',
     },
     twilightNote:
-      'Desde las 23:32 el cielo está completamente oscuro: a partir de ahí las condiciones son las mejores posibles.',
+      'Desde las {time} el cielo está completamente oscuro: a partir de ahí las condiciones son las mejores posibles.',
+    neverFullyDark:
+      'A esta latitud y en esta época del año el cielo nunca queda completamente oscuro: queda un resplandor bajo hacia el Norte toda la noche.',
     perseidsTitle: 'Perseidas en el pico, sin Luna',
     perseidsBody:
       'Un eclipse de Sol ocurre por definición con Luna nueva. Eso significa que la noche del pico de las Perseidas no tiene ni un hilo de luz lunar: es la mejor combinación posible.',
@@ -728,7 +808,7 @@ const es: Dict = {
     moonLabel: 'Iluminación lunar',
     radiantTitle: 'Altura del radiante',
     radiantNote:
-      'El radiante está en Perseo, al Noreste, y desde A Coruña no se pone nunca. Cuanto más sube, más meteoros ves: las mejores horas son después de la una.',
+      'El radiante está en Perseo, al Noreste, y desde {city} no se pone nunca. Cuanto más sube, más meteoros ves: las mejores horas son después de la una.',
     bestWindow: 'Mejores horas',
     bestWindowValue: 'de la 01:00 al amanecer',
     tipsTitle: 'Para las Perseidas',
@@ -742,19 +822,498 @@ const es: Dict = {
 
   footer: {
     offline: 'Funciona sin conexión: los datos del eclipse están guardados en la app.',
-    disclaimer:
-      'Horas calculadas para A Coruña (43.3623, −8.4115). Comprueba siempre las condiciones reales en el sitio.',
+    disclaimer: 'Horas calculadas para {city} ({lat}, {lng}). Comprueba siempre las condiciones reales en el sitio.',
     timezoneWarning:
-      'El teléfono no está en hora de Madrid: todas las horas mostradas son las locales de A Coruña.',
+      'El teléfono no está en la hora de {city}: todas las horas mostradas son las locales de la ciudad seleccionada.',
     sources:
-      'Posiciones de planetas y estrellas calculadas para el máximo del eclipse desde A Coruña. Regenerables con "npm run verify:sky".',
+      'Horas, posición del Sol, planetas y crepúsculo calculados y verificados para cada ciudad con los scripts en scripts/verify-*.mjs.',
+  },
+
+  cityPicker: {
+    title: 'Elige una ciudad',
+    subtitle:
+      'Solo ciudades donde el eclipse del 12 de agosto es realmente visible: en el resto no hay nada que ver ese día.',
+    totalGroup: 'Eclipse total',
+    partialGroup: 'Eclipse parcial',
+    scopeNote:
+      'La mayoría de las grandes ciudades del mundo no ven nada el 12 de agosto de 2026: el eclipse solo es visible a lo largo de una franja estrecha entre el Ártico, Groenlandia, Islandia y Europa. Por eso la lista se limita a estas 16 ciudades.',
+  },
+
+  eclipseTitle: {
+    total: 'Eclipse total de Sol',
+    partial: 'Eclipse parcial de Sol',
+  },
+
+  partialNotice: {
+    eyebrow: 'No aplicable aquí',
+    totality: {
+      title: 'Aquí no hay totalidad',
+      body: 'La secuencia de los 76 segundos y fenómenos como la corona, el anillo de diamante y la cromosfera solo existen cuando el Sol está completamente cubierto. Desde {city} el eclipse sigue siendo parcial, con una cobertura máxima del {magnitude}%: el Sol nunca quedará totalmente cubierto, así que no hay una secuencia que seguir. Mantén las gafas puestas todo el tiempo.',
+    },
+    sky: {
+      title: 'El cielo no se oscurece lo suficiente',
+      body: 'Planetas y estrellas solo se vuelven visibles cuando el disco solar está completamente cubierto y el cielo baja a un brillo de crepúsculo. Desde {city}, donde el eclipse sigue siendo parcial (máximo {magnitude}% de cobertura), el cielo queda demasiado claro para que esto ocurra.',
+    },
+  },
+
+  cities: {
+    'a-coruna': { name: 'A Coruña', country: 'España' },
+    reykjavik: { name: 'Reikiavik', country: 'Islandia' },
+    valencia: { name: 'Valencia', country: 'España' },
+    zaragoza: { name: 'Zaragoza', country: 'España' },
+    bilbao: { name: 'Bilbao', country: 'España' },
+    palma: { name: 'Palma de Mallorca', country: 'España' },
+    madrid: { name: 'Madrid', country: 'España' },
+    lisbon: { name: 'Lisboa', country: 'Portugal' },
+    dublin: { name: 'Dublín', country: 'Irlanda' },
+    paris: { name: 'París', country: 'Francia' },
+    london: { name: 'Londres', country: 'Reino Unido' },
+    brussels: { name: 'Bruselas', country: 'Bélgica' },
+    amsterdam: { name: 'Ámsterdam', country: 'Países Bajos' },
+    berlin: { name: 'Berlín', country: 'Alemania' },
+    stockholm: { name: 'Estocolmo', country: 'Suecia' },
+    rome: { name: 'Roma', country: 'Italia' },
   },
 };
 
-export const dictionaries: Record<Lang, Dict> = { it, es };
+const en: Dict = {
+  appName: 'Coruña Eclipse Navigator',
+  tagline: 'Total solar eclipse · 12 August 2026',
+  liveClock: 'Local time',
+  langLabel: 'Language',
+
+  stage: {
+    before: 'Before the eclipse',
+    'partial-rising': 'Partial phase',
+    totality: 'Totality',
+    'partial-falling': 'Final partial phase',
+    after: 'Eclipse over',
+  },
+
+  status: {
+    before: 'Get ready. Pick a spot with a completely open view to the West.',
+    'partial-rising': 'The eclipse has begun. Look West using only certified eclipse glasses.',
+    totality: 'TOTALITY. The Sun is completely covered. You can remove your glasses only during this phase.',
+    'partial-falling': 'Put your certified glasses back on now: the Sun is visible again.',
+    after: 'The eclipse is over.',
+    partialFallingOnly: 'The eclipse has passed its maximum and is now waning. Keep your glasses on throughout.',
+    neverTotalReminder:
+      'In this city the eclipse stays partial: the Sun will never be fully covered, so glasses stay mandatory for the whole event.',
+  },
+
+  countdown: {
+    nextLabel: 'Next phase',
+    to: 'Time to',
+    totalityLeft: 'Totality: time left',
+    glassesBackOn: 'Glasses back on in',
+    done: 'All phases are over',
+    days: 'd',
+    hours: 'h',
+    minutes: 'min',
+    seconds: 's',
+  },
+
+  phases: {
+    'partial-start': 'Eclipse begins',
+    'totality-start': 'Totality begins',
+    maximum: 'Maximum',
+    'totality-end': 'Totality ends',
+    'partial-end': 'Eclipse ends',
+  },
+
+  compass: {
+    title: 'Where to look right now',
+    lookToward: 'Look toward the',
+    west: 'West',
+    azimuth: 'azimuth',
+    live: 'Real-time Sun position',
+    atMaximum: 'At eclipse maximum',
+    enable: 'Enable the compass',
+    enableHint: 'Needs permission to use the orientation sensors.',
+    unavailable: 'Compass unavailable: the rose is shown with North up.',
+    calibrate: 'Move your phone in a figure-8 to calibrate.',
+    yourHeading: 'Your phone is pointing',
+    turnRight: 'Turn right',
+    turnLeft: 'Turn left',
+    onTarget: 'You are aligned with the Sun',
+    magneticNote: 'Your phone’s compass can be off by a few degrees.',
+  },
+
+  horizon: {
+    title: 'Sun altitude',
+    aboveHorizon: 'above the horizon',
+    fists: 'about {n} fists at arm’s length',
+    belowHorizon: 'The Sun is below the horizon',
+    warning:
+      'The Sun will be very low: you need a completely open horizon to the West, with no buildings, trees or hills.',
+    atMax: 'At maximum: {alt}° altitude, azimuth {az}°',
+  },
+
+  timeline: {
+    title: 'Eclipse phases',
+    subtitle: 'Local times for {city} ({timezone})',
+    totalityDuration: 'Totality lasts: {n} seconds',
+    maxCoverage: 'Maximum Sun coverage: {n}%',
+    now: 'now',
+    done: 'past',
+    next: 'next',
+  },
+
+  safety: {
+    title: 'Eye safety',
+    required: 'Eclipse glasses required',
+    off: 'Glasses removable only now',
+    none: 'Never look at the Sun with the naked eye',
+    rules: [
+      'During the partial phases use only ISO 12312-2 certified eclipse glasses.',
+      'Do not use sunglasses, improvised filters, X-ray film or smoked glass.',
+      'You can remove your glasses only during totality, when the solar disk is completely covered.',
+      'Put them back on before totality ends.',
+    ],
+    bannerRequired: 'ISO 12312-2 glasses required now',
+    bannerOff: 'You can remove your glasses — only for {n} s',
+    bannerBackOn: 'Glasses now: the Sun is back',
+    bannerNone: 'Never with the naked eye, without certified glasses',
+    more: 'Full rules',
+    less: 'Close',
+  },
+
+  spots: {
+    title: 'Where to go',
+    subtitle:
+      'Suggested spots in A Coruña. No list can guarantee visibility: checking on site is always necessary.',
+    cta: 'Open directions',
+    warning: 'Always check that the horizon to the West is clear.',
+    kinds: {
+      coast: 'Coast',
+      viewpoint: 'Viewpoint',
+      beach: 'Urban beach',
+      promenade: 'Seafront promenade',
+    },
+    horizonLabel: 'Western horizon',
+    horizon: {
+      open: 'Open sea',
+      partial: 'Partially blocked',
+      limited: 'Limited',
+    },
+    reasons: {
+      oPortino:
+        'A direct Atlantic frontage: to the West there is only open sea, the best condition with the Sun at 12°.',
+      monteSanPedro:
+        'The elevation raises the apparent horizon line and lowers the risk of obstacles in front of the low Sun.',
+      riazor:
+        'A large, easy-to-reach urban beach: wide open sky, but check the headland on the western side.',
+      orzan:
+        'Right in the centre and well served: a handy fallback, with an open view to the Northwest.',
+      oParrote:
+        'A very accessible seafront walk: fine if you can’t travel further, but the city gets in the way to the West.',
+    },
+    fallbackTitle: 'If your spot is blocked',
+    fallbackSteps: [
+      'The Sun will be very low: a 20 m building can hide it up to roughly a hundred metres away.',
+      'Move to an open space or gain some height: a park, a rooftop, a hill.',
+      'Check the horizon an hour ahead, while the Sun is still higher: if you lose sight of it, move now.',
+      'A plain but open spot beats a scenic one with an obstacle in front.',
+    ],
+    distance: '~{n} km from the centre',
+
+    genericTitle: 'Where to look',
+    genericSubtitle: 'Direction to look for: {dir}, azimuth {az}°',
+    genericBody:
+      'We don’t have verified spots for this city, so we’re not making any up. Look for a place with an open view in the direction shown: a park, an accessible rooftop, an embankment, a hill. What matters is no buildings or trees along the line of sight.',
+    searchViewpoint: 'viewpoint',
+    searchViewpointCta: 'Search for viewpoints',
+    searchOpenSpace: 'park',
+    searchOpenSpaceCta: 'Search for parks and open spaces',
+  },
+
+  weather: {
+    title: 'Weather and cloud cover',
+    mock: 'Simulated data',
+    mockNote: 'Example values: this section is ready to be connected to a weather API.',
+    cloudCover: 'Cloud cover',
+    lowClouds: 'Low clouds',
+    lowCloudsNote: 'Low clouds matter most with the Sun close to the horizon.',
+    visibility: 'Visibility',
+    wind: 'Wind',
+    temperature: 'Temperature',
+    hourly: 'Hourly cloud cover',
+    observedAt: 'Updated at',
+    verdict: {
+      good: 'Favourable conditions',
+      mixed: 'Uncertain conditions',
+      poor: 'Difficult conditions',
+    },
+  },
+
+  tabs: {
+    now: 'Now',
+    totality: 'Totality',
+    sky: 'Sky',
+    places: 'Places',
+  },
+
+  dial: {
+    covered: 'Covered',
+  },
+
+  script: {
+    title: 'The 76 seconds',
+    subtitle:
+      'Totality lasts a little over a minute. This is the order to look at things in, so you don’t reach the end without having seen anything.',
+    liveNow: 'Now',
+    glassesOn: 'Glasses on',
+    glassesOff: 'Glasses off',
+    priorityLabel: 'Don’t miss this',
+    beforeStart: 'The sequence starts at the beginning of totality, at 20:27:35.',
+    ended: 'Totality is over.',
+    tip: 'Tip: don’t take photos. With 76 seconds, a phone will cost you the one thing that matters.',
+    steps: {
+      approach: {
+        title: 'The shadow arrives from the sea',
+        body: 'Look Northwest, over the Atlantic: the Moon’s shadow cone races toward you across the water. From the coast it’s a sight inland viewers never get.',
+      },
+      'shadow-bands': {
+        title: 'Shadow bands on the ground',
+        body: 'Lay a sheet or a white cloth on the ground. In the seconds before and after totality, rippling waves of light and shadow can appear, like reflections on a pool floor.',
+      },
+      beads: {
+        title: 'Baily’s beads',
+        body: 'The crescent breaks into points of light: sunlight filtering through the Moon’s mountains. Glasses still on.',
+      },
+      'diamond-in': {
+        title: 'Diamond ring',
+        body: 'A single blazing point remains on a thin ring. Keep your glasses on until it disappears completely.',
+      },
+      'glasses-off': {
+        title: 'Remove your glasses now',
+        body: 'The disk is covered. You can look with the naked eye: the only moment it’s safe, and the only one where you’ll see anything.',
+      },
+      corona: {
+        title: 'The corona',
+        body: 'Don’t do anything else. Just look. The corona is a pearly halo with filaments stretching into space: no photo does it justice.',
+      },
+      prominences: {
+        title: 'Prominences and chromosphere',
+        body: 'On the edge of the black disk, look for pink flares and a thin reddish ring: jets of gas tens of thousands of kilometres high.',
+      },
+      'look-around': {
+        title: 'Look away from the Sun',
+        body: 'Turn around: the whole 360° horizon has sunset colours, because you’re looking at daylight beyond the edge of the shadow. Listen: birds often go quiet.',
+      },
+      planets: {
+        title: 'Planets and stars',
+        body: 'Venus is high in the Southwest, very bright. Jupiter and Mercury sit a few degrees from the eclipsed Sun: no other evening of the year lets you see them.',
+      },
+      'corona-again': {
+        title: 'One last look at the corona',
+        body: 'Go back to the Sun and study the corona’s shape: it changes with every eclipse, and you’ll never see this exact one again.',
+      },
+      'glasses-on': {
+        title: 'Glasses back on',
+        body: 'Don’t wait to see the light return. Put them on now, before the Sun’s edge reappears.',
+      },
+      'diamond-out': {
+        title: 'Second diamond ring',
+        body: 'Light bursts out from the opposite side. With your glasses on, you can watch it: this is totality closing out.',
+      },
+    },
+  },
+
+  phenomena: {
+    title: 'What to look for',
+    subtitle:
+      'Every phenomenon lasts a few seconds and is only recognisable if you already know what it is. Read this beforehand, so you don’t have to think during it.',
+    difficultyLabel: 'Difficulty',
+    difficulty: { easy: 'Easy', medium: 'Medium', hard: 'Hard' },
+    directionLabel: 'Where to look',
+    direction: {
+      sun: 'Toward the Sun',
+      horizon: 'On the horizon',
+      ground: 'On the ground',
+      around: 'All around',
+      self: 'On yourself',
+    },
+    nakedEye: 'Naked eye',
+    withGlasses: 'With glasses',
+    items: {
+      'umbra-approach': {
+        title: 'The approaching shadow',
+        body: 'A dark wall advancing over the sea from the Northwest at thousands of km/h. In A Coruña it arrives from the Atlantic: the advantage of being on the coast.',
+      },
+      'shadow-bands': {
+        title: 'Shadow bands',
+        body: 'Faint light and dark ripples running across pale surfaces. They’re atmospheric turbulence lit by an extremely thin crescent Sun. Rare and elusive.',
+      },
+      temperature: {
+        title: 'Temperature drop',
+        body: 'In the hour around totality, temperature can drop several degrees and the wind can shift. Bring something to put on.',
+      },
+      wildlife: {
+        title: 'Animal reactions',
+        body: 'Gulls heading back, birds falling silent, crickets starting up. Especially noticeable on the A Coruña coast.',
+      },
+      'diamond-ring': {
+        title: 'Diamond ring',
+        body: 'A blinding point of light on a thin ring, a moment before and a moment after totality. The most photographed instant of the whole event.',
+      },
+      'baily-beads': {
+        title: 'Baily’s beads',
+        body: 'The last light broken into beads by lunar valleys. They last a few seconds and announce the start of totality.',
+      },
+      corona: {
+        title: 'The solar corona',
+        body: 'The Sun’s outer atmosphere, a million degrees, visible only now. Pearly filaments extending several solar radii.',
+      },
+      chromosphere: {
+        title: 'Chromosphere',
+        body: 'A vivid red ring on the edge of the black disk, visible for a few seconds at the start and end of totality.',
+      },
+      prominences: {
+        title: 'Prominences',
+        body: 'Pink flares of gas anchored to the solar edge, many times taller than Earth. With the Sun this low, they stand out clearly.',
+      },
+      'horizon-360': {
+        title: '360° sunset',
+        body: 'You’re inside a shadow cone only a few dozen km wide: in every direction, beyond its edge, it’s still daytime. The horizon glows orange all around.',
+      },
+    },
+  },
+
+  sky: {
+    title: 'The sky during totality',
+    subtitle:
+      'With the Sun covered, the sky drops to twilight brightness and bright planets and stars appear. Positions computed for maximum, at {time}.',
+    mapTitle: 'Western sky at maximum',
+    mapHint: 'View toward the West, from the horizon up to 45° altitude.',
+    eclipsedSun: 'Eclipsed Sun',
+    onlyNow: 'Only now',
+    onlyNowExplain:
+      'Normally lost in the Sun’s glare: totality is the only chance all year to see it.',
+    magnitude: 'magnitude',
+    fromSun: 'from the Sun',
+    altitudeShort: 'alt',
+    behindYou: 'Behind you and overhead',
+    behindYouHint:
+      'If you have time left after looking at the corona: these are already above the horizon, but you’ll have to turn around.',
+    planets: 'Planets',
+    stars: 'Bright stars',
+    objects: {
+      venus: { name: 'Venus', note: 'By far the easiest: high in the Southwest and very bright. You’ll see it even before totality.' },
+      jupiter: { name: 'Jupiter', note: 'Right next to the eclipsed Sun. Invisible on any other August evening.' },
+      mercury: { name: 'Mercury', note: 'Low, just above the horizon to the Sun’s right. Needs a perfectly clear sea horizon.' },
+      arcturus: { name: 'Arcturus', note: 'The brightest star in the sky at that moment, almost overhead toward the Southwest.' },
+      vega: { name: 'Vega', note: 'High in the East, a vertex of the Summer Triangle. You’ll need to turn all the way around.' },
+      altair: { name: 'Altair', note: 'In the East, the third vertex of the Summer Triangle.' },
+      spica: { name: 'Spica', note: 'Southwest, below Arcturus: the main star of Virgo.' },
+      antares: { name: 'Antares', note: 'Reddish, low in the South: the heart of Scorpius.' },
+      deneb: { name: 'Deneb', note: 'Northeast, in Cygnus: the farthest vertex of the Summer Triangle.' },
+      regulus: { name: 'Regulus', note: 'Very close to the Sun: in August the Sun crosses Leo, so it’s normally invisible.' },
+    },
+  },
+
+  night: {
+    title: 'The night of 12 August',
+    subtitle:
+      'The eclipse ends 19 minutes before sunset. But the evening isn’t over: that same night is the Perseid peak, with no Moon at all.',
+    twilightTitle: 'How the sky goes dark',
+    twilight: {
+      sunset: 'Sunset',
+      civilEnd: 'End of civil twilight',
+      nauticalEnd: 'End of nautical twilight',
+      astronomicalEnd: 'Astronomical darkness',
+    },
+    twilightNote: 'From {time} the sky is fully dark: from then on, conditions are as good as they get.',
+    neverFullyDark:
+      'At this latitude and time of year the sky never gets fully dark: a low glow stays on the northern horizon all night.',
+    perseidsTitle: 'Perseids at their peak, with no Moon',
+    perseidsBody:
+      'A solar eclipse happens, by definition, at new Moon. That means the night of the Perseid peak doesn’t have a single sliver of moonlight: it’s the best combination you can get.',
+    zhrLabel: 'Theoretical meteors/hour',
+    zhrNote:
+      'The ideal figure, under a perfect sky with the radiant overhead. In practice, from a dark site, expect several dozen an hour in the best hours.',
+    moonLabel: 'Moon illumination',
+    radiantTitle: 'Radiant altitude',
+    radiantNote:
+      'The radiant sits in Perseus, to the Northeast, and never sets from {city}. The higher it climbs, the more meteors you’ll see: the best hours are after 1am.',
+    bestWindow: 'Best hours',
+    bestWindowValue: '1am to dawn',
+    tipsTitle: 'For the Perseids',
+    tips: [
+      'No glasses or equipment needed: meteors are watched with the naked eye, lying down.',
+      'Look up, not at the radiant: the longest trails appear far from Perseus.',
+      'It takes 20 minutes in full darkness for your eyes to adapt. Your phone resets that adaptation every time you switch it on.',
+      'The same coastal spots from the eclipse work fine, as long as they’re away from city lights.',
+    ],
+  },
+
+  footer: {
+    offline: 'Works offline: the eclipse data is stored in the app.',
+    disclaimer: 'Times calculated for {city} ({lat}, {lng}). Always check real conditions on site.',
+    timezoneWarning:
+      'Your phone isn’t set to {city}’s time zone: every time shown is still local to the selected city.',
+    sources:
+      'Times, Sun position, planets and twilight are computed and cross-checked for every city with the scripts in scripts/verify-*.mjs.',
+  },
+
+  cityPicker: {
+    title: 'Choose a city',
+    subtitle: 'Only cities where the 12 August eclipse is actually visible — everywhere else, there’s nothing to see that day.',
+    totalGroup: 'Total eclipse',
+    partialGroup: 'Partial eclipse',
+    scopeNote:
+      'Most major cities in the world see nothing at all on 12 August 2026: the eclipse is visible only along a narrow band between the Arctic, Greenland, Iceland and Europe. That’s why this list is limited to these 16 cities.',
+  },
+
+  eclipseTitle: {
+    total: 'Total solar eclipse',
+    partial: 'Partial solar eclipse',
+  },
+
+  partialNotice: {
+    eyebrow: 'Not applicable here',
+    totality: {
+      title: 'There’s no totality here',
+      body: 'The 76-second sequence and phenomena like the corona, the diamond ring and the chromosphere only exist when the Sun is completely covered. From {city} the eclipse stays partial, with a maximum coverage of {magnitude}%: the Sun will never be fully covered, so there’s no sequence to follow. Keep your glasses on for the whole event.',
+    },
+    sky: {
+      title: 'The sky doesn’t get dark enough',
+      body: 'Planets and stars only become visible once the solar disk is fully covered and the sky drops to twilight brightness. From {city}, where the eclipse stays partial (maximum {magnitude}% coverage), the sky stays too bright for that to happen.',
+    },
+  },
+
+  cities: {
+    'a-coruna': { name: 'A Coruña', country: 'Spain' },
+    reykjavik: { name: 'Reykjavik', country: 'Iceland' },
+    valencia: { name: 'Valencia', country: 'Spain' },
+    zaragoza: { name: 'Zaragoza', country: 'Spain' },
+    bilbao: { name: 'Bilbao', country: 'Spain' },
+    palma: { name: 'Palma de Mallorca', country: 'Spain' },
+    madrid: { name: 'Madrid', country: 'Spain' },
+    lisbon: { name: 'Lisbon', country: 'Portugal' },
+    dublin: { name: 'Dublin', country: 'Ireland' },
+    paris: { name: 'Paris', country: 'France' },
+    london: { name: 'London', country: 'United Kingdom' },
+    brussels: { name: 'Brussels', country: 'Belgium' },
+    amsterdam: { name: 'Amsterdam', country: 'Netherlands' },
+    berlin: { name: 'Berlin', country: 'Germany' },
+    stockholm: { name: 'Stockholm', country: 'Sweden' },
+    rome: { name: 'Rome', country: 'Italy' },
+  },
+};
+
+export const dictionaries: Record<Lang, Dict> = { it, es, en };
 
 export type Copy = Dict;
 
 /** Replace {placeholders} in a string. */
 export const fill = (template: string, values: Record<string, string | number>) =>
   template.replace(/\{(\w+)\}/g, (_, key) => String(values[key] ?? `{${key}}`));
+
+/**
+ * Localized name/country for a city id. `City.id` is a plain string (the
+ * cities array isn't a discriminated union), so this centralises the one
+ * cast the whole app needs instead of repeating it at every call site.
+ */
+export const cityLabel = (t: Copy, id: string) =>
+  (t.cities as Record<string, { name: string; country: string }>)[id];

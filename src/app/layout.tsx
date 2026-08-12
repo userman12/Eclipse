@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from 'next';
 import { Fraunces, Geist } from 'next/font/google';
 import './globals.css';
 import { cn } from '@/lib/utils';
+import { CityProvider } from '@/lib/CityProvider';
 import { LanguageProvider } from '@/lib/LanguageProvider';
 import { Toaster } from '@/components/ui/sonner';
 import AuroraBackground from '@/components/AuroraBackground';
@@ -23,7 +24,7 @@ const fraunces = Fraunces({
 export const metadata: Metadata = {
   title: 'Coruña Eclipse Navigator',
   description:
-    'Eclissi totale di Sole del 12 agosto 2026 vista da A Coruña: dove andare, dove guardare, quanto manca e quando è sicuro togliere gli occhiali.',
+    'Eclissi di Sole del 12 agosto 2026, calcolata per 16 città da A Coruña a Londra: dove andare, dove guardare, quanto manca e quando è sicuro togliere gli occhiali.',
   applicationName: 'Coruña Eclipse Navigator',
   // Relative on purpose: the app has a single route, so these resolve
   // correctly both at the site root (local dev) and under a GitHub Pages
@@ -58,9 +59,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body>
         <AuroraBackground />
         <LanguageProvider>
-          {children}
-          <Toaster position="top-center" />
-          <ServiceWorkerRegistrar />
+          <CityProvider>
+            {children}
+            <Toaster position="top-center" />
+            <ServiceWorkerRegistrar />
+          </CityProvider>
         </LanguageProvider>
       </body>
     </html>

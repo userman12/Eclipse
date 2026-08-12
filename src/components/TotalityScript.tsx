@@ -6,6 +6,7 @@ import { Eye, EyeOff, Lightbulb } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import GlassCard from '@/components/GlassCard';
+import type { City } from '@/data/cities';
 import { totalityScript, type ScriptStep } from '@/data/eventData';
 import { useCopy } from '@/lib/LanguageProvider';
 import {
@@ -14,7 +15,7 @@ import {
   isScriptLive,
   offsetSeconds,
 } from '@/lib/totality';
-import type { EclipseState } from '@/lib/time';
+import { getPhaseTimestamp, type EclipseState } from '@/lib/time';
 import { cn } from '@/lib/utils';
 
 function GlassesTag({ state }: { state: ScriptStep['glasses'] }) {
@@ -39,10 +40,14 @@ function GlassesTag({ state }: { state: ScriptStep['glasses'] }) {
  * Reading material before the event; during it, the same step that the live
  * box under the countdown is showing gets highlighted and scrolled to — both
  * views share `currentStep` so they can never disagree.
+ *
+ * Only rendered for total-eclipse cities; see PartialCityNotice for what
+ * partial-only cities get instead.
  */
-export default function TotalityScript({ state }: { state: EclipseState }) {
+export default function TotalityScript({ city, state }: { city: City; state: EclipseState }) {
   const { t } = useCopy();
-  const offset = offsetSeconds(state.now);
+  const totalityStart = getPhaseTimestamp(city, 'totality-start');
+  const offset = offsetSeconds(state.now, totalityStart);
   const live = isScriptLive(offset);
   const activeRef = useRef<HTMLLIElement | null>(null);
 

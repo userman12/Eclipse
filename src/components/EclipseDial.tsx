@@ -1,6 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
+import type { City } from '@/data/cities';
 import { impactParameter, moonTrackX, obscuration } from '@/lib/eclipseGeometry';
 import { useCopy } from '@/lib/LanguageProvider';
 import type { EclipseState } from '@/lib/time';
@@ -21,16 +22,16 @@ const R_MOON = R_SUN * 1.04;
  * mask: the covered part becomes genuinely transparent, letting the glass
  * behind show through instead of being painted over with a fake background.
  */
-export default function EclipseDial({ state }: { state: EclipseState }) {
+export default function EclipseDial({ city, state }: { city: City; state: EclipseState }) {
   const { t } = useCopy();
 
-  const x = moonTrackX(state.now);
-  const covered = obscuration(state.now);
+  const x = moonTrackX(city, state.now);
+  const covered = obscuration(city, state.now);
   const total = state.stage === 'totality';
   const idle = state.stage === 'before' || state.stage === 'after';
 
   const moonX = C + x * R_SUN;
-  const moonY = C + impactParameter() * R_SUN;
+  const moonY = C + impactParameter(city) * R_SUN;
 
   return (
     <div className="flex shrink-0 flex-col items-center gap-1" aria-hidden="false">

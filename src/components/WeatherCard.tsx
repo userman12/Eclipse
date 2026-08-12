@@ -8,6 +8,7 @@ import { CardAction, CardContent, CardHeader, CardTitle } from '@/components/ui/
 import { Progress } from '@/components/ui/progress';
 import { Skeleton } from '@/components/ui/skeleton';
 import GlassCard from '@/components/GlassCard';
+import type { City } from '@/data/cities';
 import type { WeatherSnapshot } from '@/data/eventData';
 import { assessWeather, fetchWeather, type WeatherVerdict } from '@/lib/weather';
 import { cardinal } from '@/lib/sun';
@@ -32,17 +33,18 @@ function Stat({ icon, label, value }: { icon: React.ReactNode; label: string; va
   );
 }
 
-export default function WeatherCard() {
+export default function WeatherCard({ city }: { city: City }) {
   const { t } = useCopy();
   const [weather, setWeather] = useState<WeatherSnapshot | null>(null);
 
   useEffect(() => {
     let active = true;
-    fetchWeather().then((data) => active && setWeather(data));
+    setWeather(null);
+    fetchWeather(city).then((data) => active && setWeather(data));
     return () => {
       active = false;
     };
-  }, []);
+  }, [city]);
 
   if (!weather) {
     return (

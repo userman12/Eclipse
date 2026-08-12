@@ -3,6 +3,7 @@
 import { AnimatePresence, motion } from 'framer-motion';
 import { ChevronRight, Eye, EyeOff, ListOrdered } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import type { City } from '@/data/cities';
 import { useCopy } from '@/lib/LanguageProvider';
 import {
   currentStep,
@@ -12,7 +13,7 @@ import {
   offsetSeconds,
   stepProgress,
 } from '@/lib/totality';
-import type { EclipseState } from '@/lib/time';
+import { getPhaseTimestamp, type EclipseState } from '@/lib/time';
 import { cn } from '@/lib/utils';
 
 /**
@@ -22,18 +23,25 @@ import { cn } from '@/lib/utils';
  * read a list and decide. Everything needed in the moment — glasses on or
  * off, what to look at, what comes next — has to be visible without a single
  * tap, immediately below the clock the user is already staring at.
+ *
+ * Only rendered for total-eclipse cities — callers must check
+ * `city.type === 'total'` first, since this whole choreography assumes a
+ * totality window that partial-only cities don't have.
  */
 export default function LiveGuide({
+  city,
   state,
   onOpenScript,
 }: {
+  city: City;
   state: EclipseState;
   /** Jump to the full script; optional, the box works on its own. */
   onOpenScript?: () => void;
 }) {
   const { t } = useCopy();
 
-  const offset = offsetSeconds(state.now);
+  const totalityStart = getPhaseTimestamp(city, 'totality-start');
+  const offset = offsetSeconds(state.now, totalityStart);
   const live = isScriptLive(offset);
   const step = live ? currentStep(offset) : null;
   const next = live ? nextStep(offset) : null;

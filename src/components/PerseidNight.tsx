@@ -5,16 +5,22 @@ import { Moon, MoonStar, Sparkles, Sunset } from 'lucide-react';
 import { CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import GlassCard from '@/components/GlassCard';
-import { perseids, twilight } from '@/data/eventData';
+import type { City } from '@/data/cities';
+import { perseids } from '@/data/eventData';
+import { cityLabel, fill } from '@/lib/i18n';
 import { useCopy } from '@/lib/LanguageProvider';
+import { computeRadiantAltitude, computeTwilight } from '@/lib/night';
+import { formatEventClock } from '@/lib/time';
 
 const TWILIGHT_KEYS = ['sunset', 'civilEnd', 'nauticalEnd', 'astronomicalEnd'] as const;
 
-/** Peak radiant altitude, used to scale the bars. */
-const PEAK_ALTITUDE = Math.max(...perseids.radiantAltitude.map((r) => r.altitude));
-
-export default function PerseidNight() {
+export default function PerseidNight({ city }: { city: City }) {
   const { t } = useCopy();
+
+  const twilight = computeTwilight(city);
+  const radiantAltitude = computeRadiantAltitude(city);
+  const peakAltitude = Math.max(1, ...radiantAltitude.map((r) => r.altitude));
+  const skyNeverFullyDark = twilight.astronomicalEnd === null;
 
   return (
     <GlassCard aria-labelledby="night-title">
@@ -35,30 +41,39 @@ export default function PerseidNight() {
             {t.night.twilightTitle}
           </p>
           <ul className="mt-2 space-y-1.5">
-            {TWILIGHT_KEYS.map((key, index) => (
-              <li
-                key={key}
-                className="glass-inset flex items-baseline justify-between gap-3 rounded-xl px-3 py-2"
-              >
-                <span className="flex items-center gap-2 text-sm">
-                  <span
-                    className="size-2 shrink-0 rounded-full"
-                    style={{
-                      // Each step is a darker slice of the same dusk.
-                      background: `color-mix(in oklab, var(--color-atlantic) ${index * 28}%, var(--color-sunset))`,
-                    }}
-                    aria-hidden
-                  />
-                  {t.night.twilight[key]}
-                </span>
-                <span className="numeric text-corona shrink-0 text-sm font-semibold">
-                  {twilight[key]}
-                </span>
-              </li>
-            ))}
+            {TWILIGHT_KEYS.map((key, index) => {
+              const instant = twilight[key];
+              return (
+                <li
+                  key={key}
+                  className="glass-inset flex items-baseline justify-between gap-3 rounded-xl px-3 py-2"
+                >
+                  <span className="flex items-center gap-2 text-sm">
+                    <span
+                      className="size-2 shrink-0 rounded-full"
+                      style={{
+                        // Each step is a darker slice of the same dusk.
+                        background: `color-mix(in oklab, var(--color-atlantic) ${index * 28}%, var(--color-sunset))`,
+                      }}
+                      aria-hidden
+                    />
+                    {t.night.twilight[key]}
+                  </span>
+                  <span className="numeric text-corona shrink-0 text-sm font-semibold">
+                    {instant !== null ? formatEventClock(instant, city.timezone) : '—'}
+                  </span>
+                </li>
+              );
+            })}
           </ul>
           <p className="text-muted-foreground/70 mt-2 text-xs leading-snug">
-            {t.night.twilightNote}
+            {skyNeverFullyDark
+              ? t.night.neverFullyDark
+              : fill(t.night.twilightNote, {
+                  time: twilight.astronomicalEnd
+                    ? formatEventClock(twilight.astronomicalEnd, city.timezone)
+                    : '',
+                })}
           </p>
         </div>
 
@@ -105,7 +120,7 @@ export default function PerseidNight() {
         <div>
           <p className="eyebrow">{t.night.radiantTitle}</p>
           <div className="mt-2 flex items-end gap-1.5">
-            {perseids.radiantAltitude.map((point, index) => (
+            {radiantAltitude.map((point, index) => (
               <div key={point.time} className="flex flex-1 flex-col items-center gap-1">
                 <span className="numeric text-muted-foreground text-[0.6rem]">
                   {point.altitude}°
@@ -114,7 +129,7 @@ export default function PerseidNight() {
                   <motion.div
                     className="from-deep to-corona/70 w-full rounded-md bg-gradient-to-t"
                     initial={{ height: 0 }}
-                    whileInView={{ height: `${(point.altitude / PEAK_ALTITUDE) * 100}%` }}
+                    whileInView={{ height: `${(point.altitude / peakAltitude) * 100}%` }}
                     viewport={{ once: true }}
                     transition={{
                       type: 'spring',
@@ -131,7 +146,7 @@ export default function PerseidNight() {
             ))}
           </div>
           <p className="text-muted-foreground/70 mt-2 text-xs leading-snug">
-            {t.night.radiantNote}
+            {fill(t.night.radiantNote, { city: cityLabel(t, city.id).name })}
           </p>
         </div>
 

@@ -1,16 +1,22 @@
 /**
- * Time utilities.
+ * Time utilities, parametrized by city.
  *
- * Everything about the eclipse is defined as wall-clock time in the EVENT
- * timezone (Europe/Madrid). The device may be in any timezone — or have a
- * wrong one — so we never rely on the local timezone for logic. We convert
- * the event's wall-clock times into absolute UTC instants once, and compare
- * against Date.now() from there.
+ * Every phase time is defined as wall-clock time in THAT CITY's own
+ * timezone. The device may be in any timezone — or have a wrong one — so we
+ * never rely on the local timezone for logic. We convert each phase's
+ * wall-clock time into an absolute UTC instant, and compare against
+ * Date.now() from there.
+ *
+ * `city.type` drives two structurally different state machines:
+ *   - 'total': before → partial-rising → totality → partial-falling → after
+ *   - 'partial': before → partial-rising → partial-falling → after
+ * A partial-only city's stage can NEVER become 'totality' and its safety
+ * level can NEVER become 'glasses-off' — that is enforced by which branch
+ * runs below, not by copy or by a zero-width time window, so there is no
+ * code path that tells someone in Rome or London it is safe to look up.
  */
 
-import { eclipseEvent, type Phase } from '@/data/eventData';
-
-const TZ = eclipseEvent.location.timezone;
+import { ECLIPSE_DATE, type City, type CityPhaseId } from '@/data/cities';
 
 /** Offset of `timeZone` from UTC, in ms, at the given instant (DST-aware). */
 function zoneOffsetMs(instant: number, timeZone: string): number {
@@ -38,14 +44,10 @@ function zoneOffsetMs(instant: number, timeZone: string): number {
 }
 
 /**
- * Convert a wall-clock date+time in the event timezone to a UTC timestamp.
+ * Convert a wall-clock date+time in a given timezone to a UTC timestamp.
  * Two-pass, so it stays correct across DST boundaries.
  */
-export function zonedWallTimeToUtc(
-  dateISO: string,
-  timeHMS: string,
-  timeZone: string = TZ,
-): number {
+export function zonedWallTimeToUtc(dateISO: string, timeHMS: string, timeZone: string): number {
   const [y, m, d] = dateISO.split('-').map(Number);
   const [hh, mm, ss = 0] = timeHMS.split(':').map(Number);
   const naive = Date.UTC(y, m - 1, d, hh, mm, ss);
@@ -54,24 +56,23 @@ export function zonedWallTimeToUtc(
   return refined;
 }
 
-export type TimedPhase = Phase & { timestamp: number };
+export type TimedPhase = { id: CityPhaseId; time: string; timestamp: number };
 
-/** Event phases resolved to absolute UTC instants, in chronological order. */
-export const timedPhases: TimedPhase[] = eclipseEvent.phases.map((p) => ({
-  ...p,
-  timestamp: zonedWallTimeToUtc(eclipseEvent.date, p.time),
-}));
+/** A city's phases resolved to absolute UTC instants, in chronological order. */
+export function getTimedPhases(city: City): TimedPhase[] {
+  return city.phases.map((p) => ({
+    ...p,
+    timestamp: zonedWallTimeToUtc(ECLIPSE_DATE, p.time, city.timezone),
+  }));
+}
 
-export const phaseAt = (id: Phase['id']): TimedPhase =>
-  timedPhases.find((p) => p.id === id)!;
+const phaseAt = (phases: TimedPhase[], id: CityPhaseId): TimedPhase =>
+  phases.find((p) => p.id === id)!;
 
-export const T = {
-  partialStart: phaseAt('partial-start').timestamp,
-  totalityStart: phaseAt('totality-start').timestamp,
-  maximum: phaseAt('maximum').timestamp,
-  totalityEnd: phaseAt('totality-end').timestamp,
-  partialEnd: phaseAt('partial-end').timestamp,
-};
+/** The UTC instant of a specific named phase for a city, e.g. its totality start. */
+export function getPhaseTimestamp(city: City, id: CityPhaseId): number {
+  return phaseAt(getTimedPhases(city), id).timestamp;
+}
 
 export type EclipseStage = 'before' | 'partial-rising' | 'totality' | 'partial-falling' | 'after';
 
@@ -88,35 +89,73 @@ export type EclipseState = {
   msToTarget: number;
   /** 0 → 1 progress across the whole eclipse (partial start → partial end). */
   progress: number;
-  /** Seconds of totality left; 0 outside totality. */
+  /** Seconds of totality left; always 0 for partial-only cities. */
   totalitySecondsLeft: number;
-  /** True for the first 90s after totality ends — glasses back on, urgently. */
+  /** True for the first 90s after totality ends — glasses back on, urgently. Always false for partial-only cities. */
   isJustAfterTotality: boolean;
-  /** True in the last 15s before totality begins / ends. */
+  /** True in the last 15s before totality begins / ends. Always false for partial-only cities. */
   isImminent: boolean;
 };
 
-export function getEclipseState(now: number): EclipseState {
+export function getEclipseState(city: City, now: number): EclipseState {
+  const phases = getTimedPhases(city);
+  const partialStart = phaseAt(phases, 'partial-start');
+  const maximum = phaseAt(phases, 'maximum');
+  const partialEnd = phaseAt(phases, 'partial-end');
+
   let stage: EclipseStage;
   let target: TimedPhase | null;
+  let totalitySecondsLeft = 0;
+  let isJustAfterTotality = false;
+  let isImminent = false;
 
-  if (now < T.partialStart) {
-    stage = 'before';
-    target = phaseAt('partial-start');
-  } else if (now < T.totalityStart) {
-    stage = 'partial-rising';
-    target = phaseAt('totality-start');
-  } else if (now < T.totalityEnd) {
-    stage = 'totality';
-    // During totality the only deadline that matters is putting the glasses
-    // back on before the Sun reappears.
-    target = phaseAt('totality-end');
-  } else if (now < T.partialEnd) {
-    stage = 'partial-falling';
-    target = phaseAt('partial-end');
+  if (city.type === 'total') {
+    const totalityStart = phaseAt(phases, 'totality-start');
+    const totalityEnd = phaseAt(phases, 'totality-end');
+
+    if (now < partialStart.timestamp) {
+      stage = 'before';
+      target = partialStart;
+    } else if (now < totalityStart.timestamp) {
+      stage = 'partial-rising';
+      target = totalityStart;
+    } else if (now < totalityEnd.timestamp) {
+      stage = 'totality';
+      // During totality the only deadline that matters is putting the
+      // glasses back on before the Sun reappears.
+      target = totalityEnd;
+    } else if (now < partialEnd.timestamp) {
+      stage = 'partial-falling';
+      target = partialEnd;
+    } else {
+      stage = 'after';
+      target = null;
+    }
+
+    totalitySecondsLeft =
+      stage === 'totality' ? Math.max(0, Math.ceil((totalityEnd.timestamp - now) / 1000)) : 0;
+    isJustAfterTotality = now >= totalityEnd.timestamp && now < totalityEnd.timestamp + 90_000;
+    isImminent =
+      (now < totalityStart.timestamp && totalityStart.timestamp - now <= 15_000) ||
+      (stage === 'totality' && totalityEnd.timestamp - now <= 15_000);
   } else {
-    stage = 'after';
-    target = null;
+    // Partial-only city: the Sun is never fully covered, so 'totality' and
+    // 'glasses-off' are simply not reachable states. The midpoint is
+    // 'maximum' instead of a totality window — it changes the message
+    // ("deepening" vs "waning"), never the safety requirement.
+    if (now < partialStart.timestamp) {
+      stage = 'before';
+      target = partialStart;
+    } else if (now < maximum.timestamp) {
+      stage = 'partial-rising';
+      target = maximum;
+    } else if (now < partialEnd.timestamp) {
+      stage = 'partial-falling';
+      target = partialEnd;
+    } else {
+      stage = 'after';
+      target = null;
+    }
   }
 
   const safety: SafetyLevel =
@@ -126,8 +165,8 @@ export function getEclipseState(now: number): EclipseState {
         ? 'glasses-required'
         : 'no-eclipse';
 
-  const span = T.partialEnd - T.partialStart;
-  const progress = Math.min(1, Math.max(0, (now - T.partialStart) / span));
+  const span = partialEnd.timestamp - partialStart.timestamp;
+  const progress = Math.min(1, Math.max(0, (now - partialStart.timestamp) / span));
   const msToTarget = target ? Math.max(0, target.timestamp - now) : 0;
 
   return {
@@ -137,12 +176,9 @@ export function getEclipseState(now: number): EclipseState {
     target,
     msToTarget,
     progress,
-    totalitySecondsLeft:
-      stage === 'totality' ? Math.max(0, Math.ceil((T.totalityEnd - now) / 1000)) : 0,
-    isJustAfterTotality: now >= T.totalityEnd && now < T.totalityEnd + 90_000,
-    isImminent:
-      (now < T.totalityStart && T.totalityStart - now <= 15_000) ||
-      (stage === 'totality' && T.totalityEnd - now <= 15_000),
+    totalitySecondsLeft,
+    isJustAfterTotality,
+    isImminent,
   };
 }
 
@@ -165,24 +201,31 @@ export function breakdown(ms: number): Countdown {
   };
 }
 
-const clockFormatter = new Intl.DateTimeFormat('es-ES', {
-  timeZone: TZ,
-  hourCycle: 'h23',
-  hour: '2-digit',
-  minute: '2-digit',
-  second: '2-digit',
-});
+const clockFormatterCache = new Map<string, Intl.DateTimeFormat>();
 
-/** Current wall-clock time in the event timezone, e.g. "20:27:35". */
-export const formatEventClock = (instant: number) => clockFormatter.format(new Date(instant));
+/** Current wall-clock time in a given timezone, e.g. "20:27:35". */
+export function formatEventClock(instant: number, timezone: string): string {
+  let formatter = clockFormatterCache.get(timezone);
+  if (!formatter) {
+    formatter = new Intl.DateTimeFormat('en-GB', {
+      timeZone: timezone,
+      hourCycle: 'h23',
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+    });
+    clockFormatterCache.set(timezone, formatter);
+  }
+  return formatter.format(new Date(instant));
+}
 
 /** "19:30:51" → "19:30" for compact display. */
 export const toHM = (time: string) => time.slice(0, 5);
 
-/** True when the device timezone differs from the event timezone. */
-export function deviceTimezoneMismatch(): string | null {
+/** True when the device timezone differs from a given timezone. */
+export function deviceTimezoneMismatch(timezone: string): string | null {
   const device = Intl.DateTimeFormat().resolvedOptions().timeZone;
-  if (!device || device === TZ) return null;
+  if (!device || device === timezone) return null;
   const now = Date.now();
-  return zoneOffsetMs(now, device) === zoneOffsetMs(now, TZ) ? null : device;
+  return zoneOffsetMs(now, device) === zoneOffsetMs(now, timezone) ? null : device;
 }

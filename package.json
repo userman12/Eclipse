@@ -9,7 +9,8 @@
     "typecheck": "tsc --noEmit",
     "icons": "node scripts/generate-icons.mjs",
     "verify:sky": "node scripts/verify-sky.mjs",
-    "verify:dial": "node scripts/verify-dial.mjs"
+    "verify:dial": "node scripts/verify-dial.mjs",
+    "verify:cities": "node scripts/verify-cities.mjs"
   },
   "dependencies": {
     "@tailwindcss/postcss": "^4.3.3",

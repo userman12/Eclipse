@@ -1,14 +1,16 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { eclipseEvent } from '@/data/eventData';
+import { ECLIPSE_DATE } from '@/data/cities';
 import { zonedWallTimeToUtc } from '@/lib/time';
 
 /**
- * Time simulation for testing the five temporal states without waiting for
- * the eclipse. Add `?t=20:27:30` (event-local wall clock) to the URL and the
- * clock starts there and keeps running in real time. `?t=` is ignored in the
- * absence of a valid HH:MM[:SS] value.
+ * Time simulation for testing without waiting for the actual eclipse.
+ * Add `?t=20:27:30` to the URL and the clock starts there (interpreted as
+ * Europe/Madrid wall-clock time, regardless of which city is selected — a
+ * fixed reference so the same URL always simulates the same real moment)
+ * and keeps running in real time. `?t=` is ignored without a valid
+ * HH:MM[:SS] value.
  */
 function simulationOffsetMs(): number {
   if (typeof window === 'undefined') return 0;
@@ -16,8 +18,9 @@ function simulationOffsetMs(): number {
   if (!raw || !/^\d{1,2}:\d{2}(:\d{2})?$/.test(raw)) return 0;
   const [h, m, s = '0'] = raw.split(':');
   const target = zonedWallTimeToUtc(
-    eclipseEvent.date,
+    ECLIPSE_DATE,
     `${h.padStart(2, '0')}:${m}:${s.padStart(2, '0')}`,
+    'Europe/Madrid',
   );
   return target - Date.now();
 }

@@ -1,46 +1,15 @@
 /**
- * EventData — single source of truth for the event.
- * All data is static and local: the app works with no network at all.
- * Times are LOCAL WALL-CLOCK times in the event timezone (Europe/Madrid).
+ * EventData — content shared across every city, plus A Coruña's curated
+ * observation spots. City-specific facts (phase times, Sun position, sky
+ * objects, twilight) live in src/data/cities.ts and are computed in
+ * src/lib/eclipseGeometry.ts, src/lib/skyObjects.ts and src/lib/night.ts.
  */
 
-export const eclipseEvent = {
-  id: 'solar-eclipse-2026-08-12-coruna',
-  location: {
-    name: 'A Coruña',
-    country: 'Spain',
-    timezone: 'Europe/Madrid',
-    coordinates: {
-      lat: 43.3623,
-      lng: -8.4115,
-    },
-  },
-  title: 'Eclipse total de Sol',
-  date: '2026-08-12',
-  direction: {
-    label: 'Oeste',
-    azimuth: 279,
-    altitudeAtMaximum: 12,
-    note: 'El Sol estará muy bajo sobre el horizonte.',
-  },
-  phases: [
-    { id: 'partial-start', label: 'Comienza el eclipse', time: '19:30:51' },
-    { id: 'totality-start', label: 'Comienza la totalidad', time: '20:27:35' },
-    { id: 'maximum', label: 'Máximo', time: '20:28:13' },
-    { id: 'totality-end', label: 'Finaliza la totalidad', time: '20:28:51' },
-    { id: 'partial-end', label: 'Finaliza el eclipse', time: '21:21:54' },
-  ],
-  totalityDurationSeconds: 76,
-} as const;
-
-export type EclipseEvent = typeof eclipseEvent;
-export type PhaseId = EclipseEvent['phases'][number]['id'];
-export type Phase = { id: PhaseId; label: string; time: string };
-
 /**
- * Observation spots.
+ * Observation spots — A Coruña only.
  * These are suggestions, not a guarantee of visibility: the western horizon
- * must always be verified on site.
+ * must always be verified on site. Other cities don't get fabricated named
+ * spots; see ObservationSpots.tsx for the generic fallback shown instead.
  */
 export type SpotKind = 'coast' | 'viewpoint' | 'beach' | 'promenade';
 
@@ -108,132 +77,15 @@ export const observationSpots: ObservationSpot[] = [
 ];
 
 /* ---------------------------------------------------------------------------
-   The sky during totality
-   Positions computed for A Coruña (43.3623, -8.4115) at maximum eclipse,
-   2026-08-12 20:28:13 Europe/Madrid, using JPL approximate planetary elements
-   and J2000 star coordinates. See scripts/verify-sky.mjs to re-derive them.
-
-   The Sun sits at altitude 11.8°, azimuth 279.5°.
---------------------------------------------------------------------------- */
-
-export type SkyObjectKind = 'planet' | 'star';
-
-export type SkyObject = {
-  id: string;
-  kind: SkyObjectKind;
-  /** Apparent visual magnitude — lower is brighter. */
-  magnitude: number;
-  /** Degrees above the horizon at maximum. */
-  altitude: number;
-  /** Degrees clockwise from true North at maximum. */
-  azimuth: number;
-  /** Angular distance from the eclipsed Sun, in degrees. */
-  separationFromSun: number;
-  /**
-   * True when the object is normally lost in the Sun's glare and only becomes
-   * visible because the disk is covered — the rarest sight of the whole event.
-   */
-  onlyDuringTotality?: boolean;
-};
-
-export const sunAtMaximum = { altitude: 11.8, azimuth: 279.5 };
-
-export const skyDuringTotality: SkyObject[] = [
-  // Planets, brightest first
-  {
-    id: 'venus',
-    kind: 'planet',
-    magnitude: -2.8,
-    altitude: 28.2,
-    azimuth: 233.5,
-    separationFromSun: 45.9,
-  },
-  {
-    id: 'jupiter',
-    kind: 'planet',
-    magnitude: -1.8,
-    altitude: 6.9,
-    azimuth: 288.9,
-    separationFromSun: 10.5,
-    onlyDuringTotality: true,
-  },
-  {
-    id: 'mercury',
-    kind: 'planet',
-    magnitude: -1.0,
-    altitude: 4.7,
-    azimuth: 292.7,
-    separationFromSun: 14.9,
-    onlyDuringTotality: true,
-  },
-  // Stars, brightest first
-  {
-    id: 'arcturus',
-    kind: 'star',
-    magnitude: -0.05,
-    altitude: 62.4,
-    azimuth: 214.0,
-    separationFromSun: 68.3,
-  },
-  {
-    id: 'vega',
-    kind: 'star',
-    magnitude: 0.03,
-    altitude: 53.0,
-    azimuth: 79.8,
-    separationFromSun: 113.1,
-  },
-  {
-    id: 'altair',
-    kind: 'star',
-    magnitude: 0.77,
-    altitude: 22.1,
-    azimuth: 98.9,
-    separationFromSun: 146.1,
-  },
-  {
-    id: 'spica',
-    kind: 'star',
-    magnitude: 0.97,
-    altitude: 29.6,
-    azimuth: 212.6,
-    separationFromSun: 64.2,
-  },
-  {
-    id: 'antares',
-    kind: 'star',
-    magnitude: 1.09,
-    altitude: 18.4,
-    azimuth: 163.5,
-    separationFromSun: 110.0,
-  },
-  {
-    id: 'deneb',
-    kind: 'star',
-    magnitude: 1.25,
-    altitude: 34.9,
-    azimuth: 57.8,
-    separationFromSun: 118.9,
-  },
-  {
-    id: 'regulus',
-    kind: 'star',
-    magnitude: 1.35,
-    altitude: 17.0,
-    azimuth: 270.5,
-    separationFromSun: 10.1,
-    onlyDuringTotality: true,
-  },
-];
-
-/* ---------------------------------------------------------------------------
    The 76 seconds
-   A second-by-second plan. Totality is desperately short and the single most
-   common regret is spending it fumbling with a phone, so each step says one
-   thing to do and whether the glasses are on or off.
+   A second-by-second plan, universal to any total-eclipse city: the offsets
+   are relative to THAT city's own totality start/end (src/lib/time.ts),
+   so the same script applies whether totality lasts 32s (Bilbao) or 96s
+   (Palma) — only steps whose window fits are ever reached.
 
-   `from` / `to` are seconds relative to the START of totality (20:27:35);
-   negative values are before it. Totality ends at +76.
+   Totality is desperately short and the single most common regret is
+   spending it fumbling with a phone, so each step says one thing to do and
+   whether the glasses are on or off.
 --------------------------------------------------------------------------- */
 
 export type GlassesState = 'on' | 'off';
@@ -266,6 +118,7 @@ export const totalityScript: ScriptStep[] = [
    Phenomena reference
    What each thing actually is, so it can be recognised rather than merely
    waited for. Read before the event; during it, follow the script above.
+   Universal to any total-eclipse city.
 --------------------------------------------------------------------------- */
 
 export type Difficulty = 'easy' | 'medium' | 'hard';
@@ -295,52 +148,30 @@ export const phenomena: Phenomenon[] = [
 ];
 
 /* ---------------------------------------------------------------------------
-   The rest of the night
-   The eclipse ends 19 minutes before sunset, and the same night happens to be
-   the Perseid peak. A solar eclipse means a new Moon, so the sky is as dark as
-   it ever gets — the two best nights of the year land on the same date.
+   Perseids — generic facts, true for every city on the list.
+   Location-specific numbers (twilight ladder, radiant altitude through the
+   night) are computed live in src/lib/night.ts instead of hardcoded here.
 --------------------------------------------------------------------------- */
-
-export const twilight = {
-  /** Wall-clock times, Europe/Madrid, 12 August 2026. */
-  sunset: '21:41',
-  civilEnd: '22:12',
-  nauticalEnd: '22:50',
-  astronomicalEnd: '23:32',
-};
 
 export const perseids = {
   peakNight: '12–13',
-  /** New Moon: guaranteed by the eclipse itself. */
+  /** New Moon: guaranteed by the eclipse itself, everywhere on Earth. */
   moonIllumination: 0,
   radiant: { constellation: 'Perseus', ra: '03h13m', dec: 58 },
-  /** The radiant never sets from A Coruña (dec 58° > 90° − 43.4°). */
-  circumpolar: true,
   /** Zenithal hourly rate under a perfect sky; real counts are lower. */
   zhr: 100,
-  /** Radiant altitude through the night, local time. */
-  radiantAltitude: [
-    { time: '22:00', altitude: 13 },
-    { time: '23:00', altitude: 17 },
-    { time: '00:00', altitude: 21 },
-    { time: '01:00', altitude: 27 },
-    { time: '02:00', altitude: 33 },
-    { time: '03:00', altitude: 40 },
-    { time: '04:00', altitude: 48 },
-    { time: '05:00', altitude: 56 },
-  ],
 };
 
 /**
  * Weather — MOCK data.
  * Shaped like a real forecast payload so it can be swapped for an API
- * response (AEMET / Open-Meteo) without touching the UI.
- * See src/lib/weather.ts for the fetch seam.
+ * response (AEMET / Open-Meteo / Met Éireann / DWD...) without touching the
+ * UI. See src/lib/weather.ts for the fetch seam and per-city variation.
  */
 export type WeatherSnapshot = {
   source: string;
   isMock: boolean;
-  observedAt: string; // wall-clock time in event timezone
+  observedAt: string; // wall-clock time in the city's own timezone
   temperatureC: number;
   cloudCoverPercent: number;
   lowCloudPercent: number;
@@ -349,23 +180,4 @@ export type WeatherSnapshot = {
   windDirection: number;
   /** Hourly cloud cover around the event window. */
   hourly: { time: string; cloudCoverPercent: number }[];
-};
-
-export const mockWeather: WeatherSnapshot = {
-  source: 'mock',
-  isMock: true,
-  observedAt: '18:00',
-  temperatureC: 21,
-  cloudCoverPercent: 35,
-  lowCloudPercent: 20,
-  visibilityKm: 18,
-  windKmh: 14,
-  windDirection: 300,
-  hourly: [
-    { time: '18:00', cloudCoverPercent: 45 },
-    { time: '19:00', cloudCoverPercent: 40 },
-    { time: '20:00', cloudCoverPercent: 30 },
-    { time: '21:00', cloudCoverPercent: 25 },
-    { time: '22:00', cloudCoverPercent: 35 },
-  ],
 };

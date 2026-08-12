@@ -9,7 +9,9 @@ import Countdown from '@/components/Countdown';
 import ContextualStatus from '@/components/ContextualStatus';
 import EclipseDial from '@/components/EclipseDial';
 import LiveGuide from '@/components/LiveGuide';
-import { eclipseEvent } from '@/data/eventData';
+import { ECLIPSE_DATE } from '@/data/cities';
+import { useCity } from '@/lib/CityProvider';
+import { cityLabel } from '@/lib/i18n';
 import { useCopy } from '@/lib/LanguageProvider';
 import { formatEventClock, type EclipseState } from '@/lib/time';
 
@@ -30,13 +32,16 @@ export default function EclipseHero({
   onOpenScript?: () => void;
 }) {
   const { lang, t } = useCopy();
+  const { city } = useCity();
+  const label = cityLabel(t, city.id);
 
-  const dateLabel = new Intl.DateTimeFormat(lang === 'it' ? 'it-IT' : 'es-ES', {
+  const localeTag = { it: 'it-IT', es: 'es-ES', en: 'en-GB' }[lang];
+  const dateLabel = new Intl.DateTimeFormat(localeTag, {
     day: 'numeric',
     month: 'long',
     year: 'numeric',
-    timeZone: eclipseEvent.location.timezone,
-  }).format(new Date(`${eclipseEvent.date}T12:00:00Z`));
+    timeZone: city.timezone,
+  }).format(new Date(`${ECLIPSE_DATE}T12:00:00Z`));
 
   const countdownLabel =
     state.stage === 'totality'
@@ -54,17 +59,17 @@ export default function EclipseHero({
         <div className="min-w-0">
           <p className="eyebrow flex items-center gap-1.5">
             <MapPin size={13} aria-hidden />
-            {eclipseEvent.location.name}, {eclipseEvent.location.country}
+            {label.name}, {label.country}
           </p>
           <h1 className="font-display mt-1.5 text-2xl leading-tight tracking-tight">
-            {eclipseEvent.title}
+            {city.type === 'total' ? t.eclipseTitle.total : t.eclipseTitle.partial}
           </h1>
           <p className="text-muted-foreground mt-0.5 text-sm">{dateLabel}</p>
         </div>
 
         <div className="shrink-0 text-right">
           <p className="numeric font-display text-xl leading-none">
-            {formatEventClock(state.now)}
+            {formatEventClock(state.now, city.timezone)}
           </p>
           <p className="text-muted-foreground mt-1 text-[0.62rem] tracking-widest uppercase">
             {t.liveClock}
@@ -91,7 +96,7 @@ export default function EclipseHero({
             </div>
 
             {/* Live Sun/Moon geometry, driven by the same clock as the countdown. */}
-            <EclipseDial state={state} />
+            <EclipseDial city={city} state={state} />
           </div>
 
           <Progress
@@ -100,13 +105,16 @@ export default function EclipseHero({
             aria-label={t.timeline.title}
           />
 
-          {/* Renders only inside the script window; silent the rest of the time. */}
-          <LiveGuide state={state} onOpenScript={onOpenScript} />
+          {/* Renders only inside the script window, and only for total-eclipse
+              cities; silent the rest of the time. */}
+          {city.type === 'total' && (
+            <LiveGuide city={city} state={state} onOpenScript={onOpenScript} />
+          )}
         </CardContent>
       </GlassCard>
 
       <motion.div variants={revealVariants}>
-        <ContextualStatus state={state} />
+        <ContextualStatus city={city} state={state} />
       </motion.div>
     </header>
   );

@@ -6,8 +6,12 @@ import { Badge } from '@/components/ui/badge';
 import { CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import GlassCard from '@/components/GlassCard';
-import { skyDuringTotality, sunAtMaximum, type SkyObject } from '@/data/eventData';
+import type { City } from '@/data/cities';
+import { fill } from '@/lib/i18n';
 import { useCopy } from '@/lib/LanguageProvider';
+import { getSunPosition } from '@/lib/sun';
+import { getSkyObjects, type SkyObject } from '@/lib/skyObjects';
+import { formatEventClock, getPhaseTimestamp } from '@/lib/time';
 import { cn } from '@/lib/utils';
 
 /* The map frames the western sky: wide enough to hold Venus on one side and
@@ -67,15 +71,29 @@ function ObjectRow({ object }: { object: SkyObject }) {
   );
 }
 
-export default function SkyDuringTotality() {
+/**
+ * Only meaningful for total-eclipse cities: partial eclipses never darken
+ * the sky enough for planets or stars to appear. Callers must check
+ * `city.type === 'total'` before rendering this.
+ */
+export default function SkyDuringTotality({ city }: { city: City }) {
   const { t } = useCopy();
 
-  const mapped = skyDuringTotality.filter(inFrame);
-  const planets = skyDuringTotality.filter((o) => o.kind === 'planet');
-  const elsewhere = skyDuringTotality.filter((o) => o.kind === 'star' && !inFrame(o));
+  const maximum = getPhaseTimestamp(city, 'maximum');
+  const { lat, lng } = city.coordinates;
+  // With the Sun this low, an object just a few degrees away can be below
+  // the horizon even while the Sun is briefly still up — Mercury in
+  // particular sets close to the Sun from some of these cities. Anything
+  // with altitude ≤ 0 is not actually visible, whatever its magnitude.
+  const sky = getSkyObjects(maximum, lat, lng).filter((o) => o.altitude > 0);
+  const sun = getSunPosition(maximum, lat, lng);
 
-  const sunX = px(sunAtMaximum.azimuth);
-  const sunY = py(sunAtMaximum.altitude);
+  const mapped = sky.filter(inFrame);
+  const planets = sky.filter((o) => o.kind === 'planet');
+  const elsewhere = sky.filter((o) => o.kind === 'star' && !inFrame(o));
+
+  const sunX = px(sun.azimuth);
+  const sunY = py(sun.altitude);
 
   return (
     <GlassCard live aria-labelledby="sky-title">
@@ -87,7 +105,9 @@ export default function SkyDuringTotality() {
       </CardHeader>
 
       <CardContent className="space-y-4">
-        <p className="text-muted-foreground text-sm leading-snug">{t.sky.subtitle}</p>
+        <p className="text-muted-foreground text-sm leading-snug">
+          {fill(t.sky.subtitle, { time: formatEventClock(maximum, city.timezone) })}
+        </p>
 
         <div className="-mx-2">
           <svg

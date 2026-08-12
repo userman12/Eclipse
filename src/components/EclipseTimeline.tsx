@@ -5,22 +5,25 @@ import { Badge } from '@/components/ui/badge';
 import { CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import GlassCard from '@/components/GlassCard';
-import { eclipseEvent } from '@/data/eventData';
-import { fill } from '@/lib/i18n';
+import type { City } from '@/data/cities';
+import { cityLabel, fill } from '@/lib/i18n';
 import { useCopy } from '@/lib/LanguageProvider';
-import { timedPhases, toHM, type EclipseState } from '@/lib/time';
+import { getTimedPhases, toHM, type EclipseState } from '@/lib/time';
 import { cn } from '@/lib/utils';
 
 const TOTALITY_IDS = new Set(['totality-start', 'maximum', 'totality-end']);
 
-export default function EclipseTimeline({ state }: { state: EclipseState }) {
+export default function EclipseTimeline({ city, state }: { city: City; state: EclipseState }) {
   const { t } = useCopy();
+  const timedPhases = getTimedPhases(city);
   const nextIndex = timedPhases.findIndex((p) => p.timestamp > state.now);
 
   return (
     <GlassCard aria-labelledby="timeline-title">
       <CardHeader>
-        <p className="eyebrow">{t.timeline.subtitle}</p>
+        <p className="eyebrow">
+          {fill(t.timeline.subtitle, { city: cityLabel(t, city.id).name, timezone: city.timezone })}
+        </p>
         <CardTitle id="timeline-title" className="font-display text-xl tracking-tight">
           {t.timeline.title}
         </CardTitle>
@@ -111,7 +114,9 @@ export default function EclipseTimeline({ state }: { state: EclipseState }) {
         <Separator className="my-4" />
 
         <p className="text-muted-foreground text-sm">
-          {fill(t.timeline.totalityDuration, { n: eclipseEvent.totalityDurationSeconds })}
+          {city.type === 'total'
+            ? fill(t.timeline.totalityDuration, { n: city.totalityDurationSeconds ?? 0 })
+            : fill(t.timeline.maxCoverage, { n: Math.round(city.magnitudeAtMax * 100) })}
         </p>
       </CardContent>
     </GlassCard>

@@ -18,12 +18,15 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     const stored = window.localStorage.getItem(STORAGE_KEY);
-    if (stored === 'it' || stored === 'es') {
+    if (stored === 'it' || stored === 'es' || stored === 'en') {
       setLangState(stored);
       return;
     }
-    // Someone opening this in A Coruña with a Spanish phone gets Spanish.
-    if (navigator.language?.toLowerCase().startsWith('es')) setLangState('es');
+    // Someone opening this with a Spanish or English phone gets that
+    // language automatically — useful across a 16-city, 6-country list.
+    const device = navigator.language?.toLowerCase() ?? '';
+    if (device.startsWith('es')) setLangState('es');
+    else if (device.startsWith('en')) setLangState('en');
   }, []);
 
   useEffect(() => {

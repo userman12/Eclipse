@@ -9,7 +9,9 @@ import {
   AccordionTrigger,
 } from '@/components/ui/accordion';
 import { CardContent } from '@/components/ui/card';
+import type { City } from '@/data/cities';
 import { observationSpots, type WestHorizon } from '@/data/eventData';
+import GenericSpotGuidance from '@/components/GenericSpotGuidance';
 import GlassCard, { staggerVariants } from '@/components/GlassCard';
 import ObservationSpotCard from '@/components/ObservationSpotCard';
 import { useCopy } from '@/lib/LanguageProvider';
@@ -18,8 +20,17 @@ import { useCopy } from '@/lib/LanguageProvider';
 const rank: Record<WestHorizon, number> = { open: 0, partial: 1, limited: 2 };
 const sorted = [...observationSpots].sort((a, b) => rank[a.westHorizon] - rank[b.westHorizon]);
 
-export default function ObservationSpots() {
+/**
+ * A Coruña has five checked local spots (below). Every other city gets
+ * GenericSpotGuidance instead — see that file for why fabricating named
+ * viewpoints elsewhere would be worse than not listing any.
+ */
+export default function ObservationSpots({ city }: { city: City }) {
   const { t } = useCopy();
+
+  if (city.id !== 'a-coruna') {
+    return <GenericSpotGuidance city={city} />;
+  }
 
   return (
     <motion.section

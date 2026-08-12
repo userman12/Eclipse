@@ -8,7 +8,6 @@
  */
 
 import { totalityScript, type ScriptStep } from '@/data/eventData';
-import { T } from '@/lib/time';
 
 /**
  * The window in which the script has something to say — derived from the
@@ -18,8 +17,14 @@ import { T } from '@/lib/time';
 export const SCRIPT_START = Math.min(...totalityScript.map((s) => s.from));
 export const SCRIPT_END = Math.max(...totalityScript.map((s) => s.to));
 
-/** Signed seconds relative to the start of totality (negative = before). */
-export const offsetSeconds = (now: number) => (now - T.totalityStart) / 1000;
+/**
+ * Signed seconds relative to the start of totality (negative = before).
+ * Only meaningful for total-eclipse cities — callers must check
+ * `city.type === 'total'` before using this, since partial-only cities have
+ * no totality-start instant to measure from.
+ */
+export const offsetSeconds = (now: number, totalityStart: number) =>
+  (now - totalityStart) / 1000;
 
 export const isScriptLive = (offset: number) =>
   offset >= SCRIPT_START && offset < SCRIPT_END;

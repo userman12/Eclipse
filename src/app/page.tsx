@@ -6,6 +6,7 @@ import { CloudSun, WifiOff } from 'lucide-react';
 import { toast } from 'sonner';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Skeleton } from '@/components/ui/skeleton';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import Compass from '@/components/Compass';
 import EclipseHero from '@/components/EclipseHero';
 import EclipseTimeline from '@/components/EclipseTimeline';
@@ -13,7 +14,11 @@ import { staggerVariants, revealVariants } from '@/components/GlassCard';
 import HorizonView from '@/components/HorizonView';
 import LanguageToggle from '@/components/LanguageToggle';
 import ObservationSpots from '@/components/ObservationSpots';
+import PerseidNight from '@/components/PerseidNight';
+import PhenomenaGuide from '@/components/PhenomenaGuide';
 import SafetyNotice from '@/components/SafetyNotice';
+import SkyDuringTotality from '@/components/SkyDuringTotality';
+import TotalityScript from '@/components/TotalityScript';
 import WeatherCard from '@/components/WeatherCard';
 import { eclipseEvent } from '@/data/eventData';
 import { getSunPosition } from '@/lib/sun';
@@ -55,10 +60,7 @@ export default function Home() {
     if (previousStage.current === stage) return;
     previousStage.current = stage;
 
-    toast(t.stage[stage], {
-      description: t.status[stage],
-      duration: 12000,
-    });
+    toast(t.stage[stage], { description: t.status[stage], duration: 12000 });
 
     if (stage === 'totality' || stage === 'partial-falling') {
       navigator.vibrate?.([120, 60, 120, 60, 240]);
@@ -90,23 +92,85 @@ export default function Home() {
       {state === null ? (
         <LoadingState />
       ) : (
-        <motion.div
-          variants={staggerVariants}
-          initial="hidden"
-          animate="visible"
-          className="space-y-4"
-        >
-          <EclipseHero state={state} />
-          <Compass azimuth={azimuth} isLive={!projected} />
-          <HorizonView state={state} altitude={altitude} isLive={!projected} />
-          <EclipseTimeline state={state} />
-          <SafetyNotice state={state} variant="card" />
-          <ObservationSpots />
-          <WeatherCard />
+        <>
+          {/* The hero stays above the tabs: countdown and current instruction
+              must never be a tap away, whatever section is open. */}
+          <motion.div variants={staggerVariants} initial="hidden" animate="visible">
+            <EclipseHero state={state} />
+          </motion.div>
+
+          <Tabs defaultValue="now" className="mt-4">
+            <TabsList className="glass h-11 w-full rounded-2xl p-1">
+              <TabsTrigger value="now" className="rounded-xl text-xs">
+                {t.tabs.now}
+              </TabsTrigger>
+              <TabsTrigger value="totality" className="rounded-xl text-xs">
+                {t.tabs.totality}
+              </TabsTrigger>
+              <TabsTrigger value="sky" className="rounded-xl text-xs">
+                {t.tabs.sky}
+              </TabsTrigger>
+              <TabsTrigger value="places" className="rounded-xl text-xs">
+                {t.tabs.places}
+              </TabsTrigger>
+            </TabsList>
+
+            <TabsContent value="now" asChild>
+              <motion.div
+                variants={staggerVariants}
+                initial="hidden"
+                animate="visible"
+                className="space-y-4"
+              >
+                <Compass azimuth={azimuth} isLive={!projected} />
+                <HorizonView state={state} altitude={altitude} isLive={!projected} />
+                <EclipseTimeline state={state} />
+                <SafetyNotice state={state} variant="card" />
+              </motion.div>
+            </TabsContent>
+
+            <TabsContent value="totality" asChild>
+              <motion.div
+                variants={staggerVariants}
+                initial="hidden"
+                animate="visible"
+                className="space-y-4"
+              >
+                <TotalityScript state={state} />
+                <PhenomenaGuide />
+              </motion.div>
+            </TabsContent>
+
+            <TabsContent value="sky" asChild>
+              <motion.div
+                variants={staggerVariants}
+                initial="hidden"
+                animate="visible"
+                className="space-y-4"
+              >
+                <SkyDuringTotality />
+                <PerseidNight />
+              </motion.div>
+            </TabsContent>
+
+            <TabsContent value="places" asChild>
+              <motion.div
+                variants={staggerVariants}
+                initial="hidden"
+                animate="visible"
+                className="space-y-4"
+              >
+                <ObservationSpots />
+                <WeatherCard />
+              </motion.div>
+            </TabsContent>
+          </Tabs>
 
           <motion.footer
-            variants={revealVariants}
-            className="text-muted-foreground/70 space-y-2 px-1 pt-2 text-xs leading-snug"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.5 }}
+            className="text-muted-foreground/70 mt-6 space-y-2 px-1 text-xs leading-snug"
           >
             {tzMismatch && (
               <Alert className="glass-inset text-sunset rounded-2xl border-0 ring-0">
@@ -120,10 +184,11 @@ export default function Home() {
               {t.footer.offline}
             </p>
             <p>{t.footer.disclaimer}</p>
+            <p>{t.footer.sources}</p>
           </motion.footer>
 
           <SafetyNotice state={state} variant="bar" />
-        </motion.div>
+        </>
       )}
     </main>
   );

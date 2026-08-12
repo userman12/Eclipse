@@ -2,7 +2,16 @@
 
 Web app / PWA mobile-first per l'**eclissi totale di Sole del 12 agosto 2026** vista da **A Coruña** (Spagna).
 
-Risponde a una sola domanda, subito: **dove devo guardare adesso?**
+🔗 **[userman12.github.io/Eclipse](https://userman12.github.io/Eclipse/)**
+
+L'app esiste per un motivo preciso: la totalità dura **76 secondi**, con il Sole a **12° sull'orizzonte**.
+Hai un solo tentativo, e l'errore più comune non è sbagliare direzione — è arrivare alla fine senza
+aver guardato le cose giuste. Quindi risponde a quattro domande, in quest'ordine:
+
+1. **Dove devo guardare adesso?** — bussola, altezza del Sole, countdown
+2. **Cosa devo fare in quei 76 secondi?** — una scaletta secondo per secondo che si illumina da sola
+3. **Cosa vedrò?** — pianeti e stelle che compaiono solo durante la totalità, fenomeni da riconoscere
+4. **E dopo?** — la stessa notte è il picco delle Perseidi, senza Luna
 
 ## Avvio
 
@@ -61,6 +70,10 @@ src/
     HorizonView.tsx            orizzonte marino, Sole basso, altezza in gradi
     EclipseTimeline.tsx        le cinque fasi con orari locali
     SafetyNotice.tsx           pill di sicurezza persistente + Drawer con le regole
+    TotalityScript.tsx         i 76 secondi, passo per passo, con step live
+    PhenomenaGuide.tsx         glossario dei fenomeni: cosa sono e come riconoscerli
+    SkyDuringTotality.tsx      mappa del cielo a Ovest + pianeti e stelle visibili
+    PerseidNight.tsx           crepuscolo, Perseidi al picco, altezza del radiante
     ObservationSpots.tsx       elenco punti + piano B se l'orizzonte è coperto
     ObservationSpotCard.tsx    card con specular highlight e CTA "Apri indicazioni"
     WeatherCard.tsx            meteo e nuvolosità (dati mock)
@@ -75,9 +88,40 @@ src/
     utils.ts                   cn() di shadcn
     useCompassHeading.ts       sensori di orientamento (con permesso iOS)
     useNow.ts                  orologio + simulazione via ?t=
+scripts/
+  generate-icons.mjs           icone PWA come PNG reali, senza dipendenze
+  verify-sky.mjs               ricalcola le posizioni di pianeti e stelle
 public/
   manifest.webmanifest, sw.js, icons/
 ```
+
+## Il cielo durante la totalità
+
+Tutte le posizioni in `eventData.ts` sono **calcolate**, non copiate: elementi planetari approssimati
+JPL (Standish) per i pianeti, coordinate J2000 per le stelle, formule di Meeus per le magnitudini.
+`npm run verify:sky` le rigenera, così i numeri si controllano invece di crederci.
+
+Cosa emerge, per A Coruña al massimo (20:28:13):
+
+| Oggetto | Magnitudine | Altezza | Distanza dal Sole |
+|---|---|---|---|
+| Venere | −2,8 | 28° | 46° |
+| Giove | −1,8 | 7° | **10,5°** |
+| Mercurio | −1,0 | 5° | **14,9°** |
+| Regolo | +1,4 | 17° | **10,1°** |
+| Arturo | −0,05 | 62° | 68° |
+
+Giove, Mercurio e Regolo sono a pochi gradi dal Sole: in qualsiasi altra sera di agosto sono
+annegati nel bagliore e invisibili. La totalità è l'unica finestra dell'anno per vederli, ed è per
+questo che l'app li segnala con un badge dedicato.
+
+## La notte, non solo l'eclissi
+
+L'eclissi finisce alle 21:21:54, **19 minuti prima del tramonto** (21:41). Ma un'eclissi solare
+avviene per definizione con la Luna nuova — e il 12 agosto è il picco delle **Perseidi**. Significa
+che la notte migliore dell'anno per le meteore capita senza un filo di luce lunare, la stessa sera
+dell'eclissi. Il buio astronomico arriva alle 23:32 e il radiante, circumpolare da questa latitudine,
+sale da 13° a 56° entro le 05:00.
 
 ## Il materiale: liquid glass
 

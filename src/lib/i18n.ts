@@ -168,12 +168,210 @@ const it = {
     },
   },
 
+  tabs: {
+    now: 'Ora',
+    totality: 'Totalità',
+    sky: 'Cielo',
+    places: 'Luoghi',
+  },
+
+  script: {
+    title: 'I 76 secondi',
+    subtitle:
+      'La totalità dura poco più di un minuto. Questo è l’ordine in cui guardare le cose, per non arrivare alla fine senza aver visto niente.',
+    liveNow: 'Adesso',
+    glassesOn: 'Occhiali indossati',
+    glassesOff: 'Occhiali tolti',
+    priorityLabel: 'Da non perdere',
+    beforeStart: 'La sequenza parte all’inizio della totalità, alle 20:27:35.',
+    ended: 'La totalità è finita.',
+    tip: 'Consiglio: non fotografare. Con 76 secondi, un telefono ti fa perdere l’unica cosa che conta.',
+    steps: {
+      approach: {
+        title: 'L’ombra arriva dal mare',
+        body: 'Guarda verso Nord-Ovest, sull’Atlantico: il cono d’ombra della Luna corre verso di te sull’acqua. Dalla costa è uno spettacolo che chi è nell’entroterra non vede.',
+      },
+      'shadow-bands': {
+        title: 'Bande d’ombra a terra',
+        body: 'Stendi un telo o un foglio bianco per terra. Nei secondi prima e dopo la totalità possono comparire onde di luce e ombra che scorrono, come riflessi sul fondo di una piscina.',
+      },
+      beads: {
+        title: 'Grani di Baily',
+        body: 'La falce si spezza in puntini di luce: è il Sole che filtra tra le montagne della Luna. Ancora con gli occhiali.',
+      },
+      'diamond-in': {
+        title: 'Anello di diamante',
+        body: 'Resta un solo punto brillantissimo su un cerchio sottile. Tieni gli occhiali finché non sparisce del tutto.',
+      },
+      'glasses-off': {
+        title: 'Togli gli occhiali adesso',
+        body: 'Il disco è coperto. Puoi guardare a occhio nudo: è l’unico momento in cui è sicuro, e l’unico in cui vedrai qualcosa.',
+      },
+      corona: {
+        title: 'La corona',
+        body: 'Non fare altro. Guarda e basta. La corona è un alone perlaceo con filamenti che si allungano nello spazio: nessuna foto le rende.',
+      },
+      prominences: {
+        title: 'Protuberanze e cromosfera',
+        body: 'Sul bordo del disco nero cerca fiammate rosa e un sottile anello rossastro: sono getti di gas alti decine di migliaia di chilometri.',
+      },
+      'look-around': {
+        title: 'Stacca gli occhi dal Sole',
+        body: 'Girati intorno: tutto l’orizzonte a 360° ha i colori del tramonto, perché stai guardando il giorno oltre il bordo dell’ombra. Ascolta: spesso gli uccelli tacciono.',
+      },
+      planets: {
+        title: 'Pianeti e stelle',
+        body: 'Venere è alto a Sud-Ovest, molto luminoso. Giove e Mercurio sono a pochi gradi dal Sole eclissato: in nessun’altra sera dell’anno riusciresti a vederli.',
+      },
+      'corona-again': {
+        title: 'Un ultimo sguardo alla corona',
+        body: 'Torna sul Sole e fissa la forma della corona: cambia a ogni eclissi e questa non la rivedrai mai più uguale.',
+      },
+      'glasses-on': {
+        title: 'Rimetti gli occhiali',
+        body: 'Non aspettare di vedere la luce tornare. Rimettili adesso, prima che il bordo del Sole riappaia.',
+      },
+      'diamond-out': {
+        title: 'Secondo anello di diamante',
+        body: 'La luce esplode dal lato opposto. Con gli occhiali puoi guardarlo: è la chiusura della totalità.',
+      },
+    },
+  },
+
+  phenomena: {
+    title: 'Cosa cercare',
+    subtitle:
+      'Ogni fenomeno dura pochi secondi e si riconosce solo se sai già cos’è. Leggi prima, così durante non devi pensarci.',
+    difficultyLabel: 'Difficoltà',
+    difficulty: { easy: 'Facile', medium: 'Media', hard: 'Difficile' },
+    directionLabel: 'Dove guardare',
+    direction: {
+      sun: 'Verso il Sole',
+      horizon: 'Sull’orizzonte',
+      ground: 'A terra',
+      around: 'Tutt’intorno',
+      self: 'Su di te',
+    },
+    nakedEye: 'A occhio nudo',
+    withGlasses: 'Con occhiali',
+    items: {
+      'umbra-approach': {
+        title: 'L’ombra che arriva',
+        body: 'Una parete scura che avanza sul mare da Nord-Ovest a migliaia di km/h. Ad A Coruña arriva dall’Atlantico: è il vantaggio di stare sulla costa.',
+      },
+      'shadow-bands': {
+        title: 'Bande d’ombra',
+        body: 'Sottili onde chiare e scure che scorrono sulle superfici chiare. Sono turbolenza atmosferica illuminata da una falce di Sole sottilissima. Rare e sfuggenti.',
+      },
+      temperature: {
+        title: 'Crollo della temperatura',
+        body: 'Nell’ora attorno alla totalità la temperatura può scendere di diversi gradi e il vento cambiare direzione. Portati qualcosa da mettere addosso.',
+      },
+      wildlife: {
+        title: 'Reazione degli animali',
+        body: 'Gabbiani che rientrano, uccelli che smettono di cantare, grilli che partono. Sulla costa di A Coruña è particolarmente evidente.',
+      },
+      'diamond-ring': {
+        title: 'Anello di diamante',
+        body: 'Un punto di luce accecante su un anello sottile, un attimo prima e un attimo dopo la totalità. È il momento più fotografato dell’intero fenomeno.',
+      },
+      'baily-beads': {
+        title: 'Grani di Baily',
+        body: 'La luce residua spezzata in perline dalle valli lunari. Durano pochi secondi e annunciano l’inizio della totalità.',
+      },
+      corona: {
+        title: 'La corona solare',
+        body: 'L’atmosfera esterna del Sole, un milione di gradi, visibile solo adesso. Filamenti perlacei che si estendono per diversi raggi solari.',
+      },
+      chromosphere: {
+        title: 'Cromosfera',
+        body: 'Un anello rosso vivo sul bordo del disco nero, visibile per pochi secondi all’inizio e alla fine della totalità.',
+      },
+      prominences: {
+        title: 'Protuberanze',
+        body: 'Fiammate di gas rosa ancorate al bordo solare, alte molte volte la Terra. Con il Sole così basso spiccano molto bene.',
+      },
+      'horizon-360': {
+        title: 'Tramonto a 360°',
+        body: 'Sei dentro un cono d’ombra largo poche decine di km: in ogni direzione, oltre il bordo, è ancora giorno. L’orizzonte si accende di arancione tutto intorno.',
+      },
+    },
+  },
+
+  sky: {
+    title: 'Il cielo durante la totalità',
+    subtitle:
+      'Con il Sole coperto il cielo scende a una luminosità da crepuscolo e compaiono pianeti e stelle luminose. Posizioni calcolate per il massimo, le 20:28:13.',
+    mapTitle: 'Cielo a Ovest al massimo',
+    mapHint: 'Vista verso Ovest, dall’orizzonte a 45° di altezza.',
+    eclipsedSun: 'Sole eclissato',
+    onlyNow: 'Solo adesso',
+    onlyNowExplain:
+      'Normalmente perso nel bagliore del Sole: la totalità è l’unica occasione dell’anno per vederlo.',
+    magnitude: 'magnitudine',
+    fromSun: 'dal Sole',
+    altitudeShort: 'alt',
+    behindYou: 'Alle tue spalle e in alto',
+    behindYouHint:
+      'Se avanza tempo dopo aver guardato la corona: queste sono già sopra l’orizzonte, ma ti costringono a voltarti.',
+    planets: 'Pianeti',
+    stars: 'Stelle luminose',
+    objects: {
+      venus: { name: 'Venere', note: 'Il più facile in assoluto: alto a Sud-Ovest e molto brillante. Lo vedrai anche prima della totalità.' },
+      jupiter: { name: 'Giove', note: 'A soli 10° dal Sole eclissato, poco sotto a destra. Invisibile in qualsiasi altra sera di agosto.' },
+      mercury: { name: 'Mercurio', note: 'Basso, appena sopra l’orizzonte a destra del Sole. Serve un orizzonte marino perfettamente pulito.' },
+      arcturus: { name: 'Arturo', note: 'La stella più luminosa del cielo in quel momento, quasi allo zenit verso Sud-Ovest.' },
+      vega: { name: 'Vega', note: 'Alta a Est, vertice del Triangolo Estivo. Ti devi girare completamente.' },
+      altair: { name: 'Altair', note: 'A Est, terzo vertice del Triangolo Estivo.' },
+      spica: { name: 'Spica', note: 'A Sud-Ovest, sotto Arturo: la stella principale della Vergine.' },
+      antares: { name: 'Antares', note: 'Rossastra, bassa a Sud: il cuore dello Scorpione.' },
+      deneb: { name: 'Deneb', note: 'A Nord-Est, nel Cigno: il vertice più lontano del Triangolo Estivo.' },
+      regulus: { name: 'Regolo', note: 'A 10° dal Sole, appena sopra: in agosto il Sole attraversa il Leone, quindi normalmente è invisibile.' },
+    },
+  },
+
+  night: {
+    title: 'La notte del 12 agosto',
+    subtitle:
+      'L’eclissi finisce 19 minuti prima del tramonto. Ma la serata non è finita: quella stessa notte è il picco delle Perseidi, e senza Luna.',
+    twilightTitle: 'Come si fa buio',
+    twilight: {
+      sunset: 'Tramonto',
+      civilEnd: 'Fine crepuscolo civile',
+      nauticalEnd: 'Fine crepuscolo nautico',
+      astronomicalEnd: 'Buio astronomico',
+    },
+    twilightNote:
+      'Dalle 23:32 il cielo è completamente buio: da quel momento in poi le condizioni sono le migliori possibili.',
+    perseidsTitle: 'Perseidi al picco, senza Luna',
+    perseidsBody:
+      'Un’eclissi di Sole avviene per definizione con la Luna nuova. Significa che la notte del picco delle Perseidi non ha nemmeno un filo di luce lunare: è la combinazione migliore che si possa avere.',
+    zhrLabel: 'Meteore/ora teoriche',
+    zhrNote:
+      'Valore ideale con cielo perfetto e radiante allo zenit. In pratica, da un punto buio, aspettati parecchie decine all’ora nelle ore migliori.',
+    moonLabel: 'Illuminazione lunare',
+    radiantTitle: 'Altezza del radiante',
+    radiantNote:
+      'Il radiante è in Perseo, a Nord-Est, e da A Coruña non tramonta mai. Più sale, più meteore vedi: le ore migliori sono dopo l’una.',
+    bestWindow: 'Ore migliori',
+    bestWindowValue: 'dall’01:00 all’alba',
+    tipsTitle: 'Per le Perseidi',
+    tips: [
+      'Non servono occhiali né strumenti: le meteore si guardano a occhio nudo, sdraiati.',
+      'Guarda in alto, non verso il radiante: le scie più lunghe compaiono lontano da Perseo.',
+      'Servono 20 minuti al buio completo perché l’occhio si adatti. Il telefono azzera l’adattamento ogni volta che lo accendi.',
+      'Gli stessi punti costieri dell’eclissi vanno bene, purché lontani dalle luci della città.',
+    ],
+  },
+
   footer: {
     offline: 'Funziona offline: i dati dell’eclissi sono salvati nell’app.',
     disclaimer:
       'Orari calcolati per A Coruña (43.3623, −8.4115). Verifica sempre le condizioni reali sul posto.',
     timezoneWarning:
       'Il telefono non è sull’orario di Madrid: tutti gli orari mostrati sono comunque quelli locali di A Coruña.',
+    sources:
+      'Posizioni di pianeti e stelle calcolate per il massimo dell’eclissi da A Coruña. Rigenerabili con "npm run verify:sky".',
   },
 };
 
@@ -338,12 +536,210 @@ const es: Dict = {
     },
   },
 
+  tabs: {
+    now: 'Ahora',
+    totality: 'Totalidad',
+    sky: 'Cielo',
+    places: 'Lugares',
+  },
+
+  script: {
+    title: 'Los 76 segundos',
+    subtitle:
+      'La totalidad dura poco más de un minuto. Este es el orden en el que mirar las cosas, para no llegar al final sin haber visto nada.',
+    liveNow: 'Ahora',
+    glassesOn: 'Gafas puestas',
+    glassesOff: 'Gafas quitadas',
+    priorityLabel: 'Imprescindible',
+    beforeStart: 'La secuencia empieza al inicio de la totalidad, a las 20:27:35.',
+    ended: 'La totalidad ha terminado.',
+    tip: 'Consejo: no hagas fotos. Con 76 segundos, el móvil te hace perder lo único que importa.',
+    steps: {
+      approach: {
+        title: 'La sombra llega desde el mar',
+        body: 'Mira hacia el Noroeste, sobre el Atlántico: el cono de sombra de la Luna corre hacia ti sobre el agua. Desde la costa es un espectáculo que no se ve tierra adentro.',
+      },
+      'shadow-bands': {
+        title: 'Bandas de sombra en el suelo',
+        body: 'Extiende una tela o una hoja blanca en el suelo. En los segundos previos y posteriores a la totalidad pueden aparecer ondas de luz y sombra, como reflejos en el fondo de una piscina.',
+      },
+      beads: {
+        title: 'Perlas de Baily',
+        body: 'La media luna se rompe en puntos de luz: es el Sol filtrándose entre las montañas de la Luna. Todavía con gafas.',
+      },
+      'diamond-in': {
+        title: 'Anillo de diamante',
+        body: 'Queda un único punto brillantísimo sobre un círculo fino. Mantén las gafas hasta que desaparezca del todo.',
+      },
+      'glasses-off': {
+        title: 'Quítate las gafas ahora',
+        body: 'El disco está cubierto. Puedes mirar a simple vista: es el único momento en que es seguro, y el único en que verás algo.',
+      },
+      corona: {
+        title: 'La corona',
+        body: 'No hagas nada más. Solo mira. La corona es un halo perlado con filamentos que se alargan en el espacio: ninguna foto los reproduce.',
+      },
+      prominences: {
+        title: 'Protuberancias y cromosfera',
+        body: 'En el borde del disco negro busca llamaradas rosas y un fino anillo rojizo: son chorros de gas de decenas de miles de kilómetros de altura.',
+      },
+      'look-around': {
+        title: 'Aparta la vista del Sol',
+        body: 'Date la vuelta: todo el horizonte a 360° tiene colores de atardecer, porque estás viendo el día más allá del borde de la sombra. Escucha: los pájaros suelen callar.',
+      },
+      planets: {
+        title: 'Planetas y estrellas',
+        body: 'Venus está alto al Suroeste, muy brillante. Júpiter y Mercurio están a pocos grados del Sol eclipsado: ninguna otra noche del año podrías verlos.',
+      },
+      'corona-again': {
+        title: 'Una última mirada a la corona',
+        body: 'Vuelve al Sol y fíjate en la forma de la corona: cambia en cada eclipse y esta no la volverás a ver igual.',
+      },
+      'glasses-on': {
+        title: 'Vuelve a ponerte las gafas',
+        body: 'No esperes a ver volver la luz. Póntelas ahora, antes de que reaparezca el borde del Sol.',
+      },
+      'diamond-out': {
+        title: 'Segundo anillo de diamante',
+        body: 'La luz estalla por el lado opuesto. Con gafas puedes mirarlo: es el cierre de la totalidad.',
+      },
+    },
+  },
+
+  phenomena: {
+    title: 'Qué buscar',
+    subtitle:
+      'Cada fenómeno dura pocos segundos y solo se reconoce si ya sabes qué es. Léelo antes, así durante no tendrás que pensarlo.',
+    difficultyLabel: 'Dificultad',
+    difficulty: { easy: 'Fácil', medium: 'Media', hard: 'Difícil' },
+    directionLabel: 'Dónde mirar',
+    direction: {
+      sun: 'Hacia el Sol',
+      horizon: 'En el horizonte',
+      ground: 'En el suelo',
+      around: 'Alrededor',
+      self: 'En ti mismo',
+    },
+    nakedEye: 'A simple vista',
+    withGlasses: 'Con gafas',
+    items: {
+      'umbra-approach': {
+        title: 'La sombra que llega',
+        body: 'Un muro oscuro que avanza sobre el mar desde el Noroeste a miles de km/h. A A Coruña llega desde el Atlántico: esa es la ventaja de estar en la costa.',
+      },
+      'shadow-bands': {
+        title: 'Bandas de sombra',
+        body: 'Finas ondas claras y oscuras que recorren las superficies claras. Son turbulencia atmosférica iluminada por una finísima hoz de Sol. Raras y esquivas.',
+      },
+      temperature: {
+        title: 'Caída de temperatura',
+        body: 'En la hora alrededor de la totalidad la temperatura puede bajar varios grados y cambiar el viento. Lleva algo de abrigo.',
+      },
+      wildlife: {
+        title: 'Reacción de los animales',
+        body: 'Gaviotas que se retiran, pájaros que dejan de cantar, grillos que arrancan. En la costa de A Coruña se nota especialmente.',
+      },
+      'diamond-ring': {
+        title: 'Anillo de diamante',
+        body: 'Un punto de luz cegador sobre un anillo fino, justo antes y justo después de la totalidad. Es el momento más fotografiado de todo el fenómeno.',
+      },
+      'baily-beads': {
+        title: 'Perlas de Baily',
+        body: 'La luz restante rota en perlas por los valles lunares. Duran pocos segundos y anuncian el inicio de la totalidad.',
+      },
+      corona: {
+        title: 'La corona solar',
+        body: 'La atmósfera exterior del Sol, a un millón de grados, visible solo ahora. Filamentos perlados que se extienden varios radios solares.',
+      },
+      chromosphere: {
+        title: 'Cromosfera',
+        body: 'Un anillo rojo intenso en el borde del disco negro, visible unos segundos al principio y al final de la totalidad.',
+      },
+      prominences: {
+        title: 'Protuberancias',
+        body: 'Llamaradas de gas rosa ancladas al borde solar, muchas veces más altas que la Tierra. Con el Sol tan bajo destacan muy bien.',
+      },
+      'horizon-360': {
+        title: 'Atardecer de 360°',
+        body: 'Estás dentro de un cono de sombra de pocas decenas de km: en todas direcciones, más allá del borde, todavía es de día. El horizonte se enciende de naranja alrededor.',
+      },
+    },
+  },
+
+  sky: {
+    title: 'El cielo durante la totalidad',
+    subtitle:
+      'Con el Sol cubierto el cielo baja a un brillo de crepúsculo y aparecen planetas y estrellas brillantes. Posiciones calculadas para el máximo, las 20:28:13.',
+    mapTitle: 'Cielo al Oeste en el máximo',
+    mapHint: 'Vista hacia el Oeste, desde el horizonte hasta 45° de altura.',
+    eclipsedSun: 'Sol eclipsado',
+    onlyNow: 'Solo ahora',
+    onlyNowExplain:
+      'Normalmente perdido en el resplandor del Sol: la totalidad es la única ocasión del año para verlo.',
+    magnitude: 'magnitud',
+    fromSun: 'del Sol',
+    altitudeShort: 'alt',
+    behindYou: 'A tu espalda y en lo alto',
+    behindYouHint:
+      'Si te sobra tiempo tras mirar la corona: ya están sobre el horizonte, pero te obligan a darte la vuelta.',
+    planets: 'Planetas',
+    stars: 'Estrellas brillantes',
+    objects: {
+      venus: { name: 'Venus', note: 'El más fácil con diferencia: alto al Suroeste y muy brillante. Lo verás incluso antes de la totalidad.' },
+      jupiter: { name: 'Júpiter', note: 'A solo 10° del Sol eclipsado, algo por debajo y a la derecha. Invisible cualquier otra noche de agosto.' },
+      mercury: { name: 'Mercurio', note: 'Bajo, apenas sobre el horizonte a la derecha del Sol. Necesita un horizonte marino perfectamente limpio.' },
+      arcturus: { name: 'Arturo', note: 'La estrella más brillante del cielo en ese momento, casi en el cenit hacia el Suroeste.' },
+      vega: { name: 'Vega', note: 'Alta al Este, vértice del Triángulo de Verano. Tienes que darte la vuelta del todo.' },
+      altair: { name: 'Altair', note: 'Al Este, tercer vértice del Triángulo de Verano.' },
+      spica: { name: 'Spica', note: 'Al Suroeste, bajo Arturo: la estrella principal de Virgo.' },
+      antares: { name: 'Antares', note: 'Rojiza, baja al Sur: el corazón de Escorpio.' },
+      deneb: { name: 'Deneb', note: 'Al Noreste, en el Cisne: el vértice más lejano del Triángulo de Verano.' },
+      regulus: { name: 'Régulo', note: 'A 10° del Sol, justo encima: en agosto el Sol atraviesa Leo, así que normalmente es invisible.' },
+    },
+  },
+
+  night: {
+    title: 'La noche del 12 de agosto',
+    subtitle:
+      'El eclipse acaba 19 minutos antes del atardecer. Pero la noche no ha terminado: esa misma noche es el pico de las Perseidas, y sin Luna.',
+    twilightTitle: 'Cómo se hace de noche',
+    twilight: {
+      sunset: 'Puesta de Sol',
+      civilEnd: 'Fin del crepúsculo civil',
+      nauticalEnd: 'Fin del crepúsculo náutico',
+      astronomicalEnd: 'Oscuridad astronómica',
+    },
+    twilightNote:
+      'Desde las 23:32 el cielo está completamente oscuro: a partir de ahí las condiciones son las mejores posibles.',
+    perseidsTitle: 'Perseidas en el pico, sin Luna',
+    perseidsBody:
+      'Un eclipse de Sol ocurre por definición con Luna nueva. Eso significa que la noche del pico de las Perseidas no tiene ni un hilo de luz lunar: es la mejor combinación posible.',
+    zhrLabel: 'Meteoros/hora teóricos',
+    zhrNote:
+      'Valor ideal con cielo perfecto y radiante en el cenit. En la práctica, desde un sitio oscuro, espera varias decenas por hora en las mejores horas.',
+    moonLabel: 'Iluminación lunar',
+    radiantTitle: 'Altura del radiante',
+    radiantNote:
+      'El radiante está en Perseo, al Noreste, y desde A Coruña no se pone nunca. Cuanto más sube, más meteoros ves: las mejores horas son después de la una.',
+    bestWindow: 'Mejores horas',
+    bestWindowValue: 'de la 01:00 al amanecer',
+    tipsTitle: 'Para las Perseidas',
+    tips: [
+      'No hacen falta gafas ni instrumentos: los meteoros se miran a simple vista, tumbado.',
+      'Mira hacia arriba, no hacia el radiante: las estelas más largas aparecen lejos de Perseo.',
+      'Hacen falta 20 minutos a oscuras para que el ojo se adapte. El móvil borra esa adaptación cada vez que lo enciendes.',
+      'Los mismos puntos costeros del eclipse sirven, siempre que estén lejos de las luces de la ciudad.',
+    ],
+  },
+
   footer: {
     offline: 'Funciona sin conexión: los datos del eclipse están guardados en la app.',
     disclaimer:
       'Horas calculadas para A Coruña (43.3623, −8.4115). Comprueba siempre las condiciones reales en el sitio.',
     timezoneWarning:
       'El teléfono no está en hora de Madrid: todas las horas mostradas son las locales de A Coruña.',
+    sources:
+      'Posiciones de planetas y estrellas calculadas para el máximo del eclipse desde A Coruña. Regenerables con "npm run verify:sky".',
   },
 };
 

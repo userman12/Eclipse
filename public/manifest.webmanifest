@@ -1,5 +1,5 @@
 {
-  "name": "Coruña Eclipse Navigator",
+  "name": "Eclipse",
   "short_name": "Eclipse",
   "description": "Live guide to the 12 August 2026 solar eclipse across 16 verified cities: where to go, where to look, how much time is left, when it's safe.",
   "start_url": ".",
@@ -9,7 +9,7 @@
   "background_color": "#071B2B",
   "theme_color": "#071B2B",
   "categories": ["travel", "education", "utilities"],
-  "lang": "it",
+  "lang": "en",
   "dir": "ltr",
   "icons": [
     {

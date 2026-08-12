@@ -1,9 +1,9 @@
-# Coruña Eclipse Navigator
+# Eclipse
 
 A mobile-first web app / PWA for the **12 August 2026 solar eclipse**, with data computed and
 cross-checked for **16 cities** where it's actually visible — from totality in A Coruña and
-Reykjavík to the deep partial phases in London, Paris or Rome. Available in **Italian, Spanish
-and English**.
+Reykjavík to the deep partial phases in London, Paris or Rome. Available in **English, Spanish
+and Italian**.
 
 🔗 **[userman12.github.io/Eclipse](https://userman12.github.io/Eclipse/)**
 
@@ -27,10 +27,11 @@ npm run dev          # http://localhost:3000
 Other commands:
 
 ```bash
-npm run build                 # production build
-npm run start                 # production server
+npm run build                  # production build
+npm run start                  # production server
 npm run typecheck              # tsc --noEmit
 npm run icons                  # regenerate PWA icons (real PNGs, no dependencies)
+npm run og-image               # regenerate the social-share preview image (same approach)
 npm run verify:cities          # cross-check all 16 cities against the app's own solar formula
 npm run verify:sky             # recompute planet/star positions for A Coruña at maximum
 npm run verify:dial            # render the Sun/Moon dial to PNG for a visual check
@@ -104,7 +105,7 @@ src/
     AuroraBackground.tsx       the animated backdrop the glass refracts
     GlassCard.tsx              shadcn Card rendered as liquid glass + shared reveal variants
     CitySelector.tsx           the 16-city picker, grouped total/partial, drawer-based
-    LanguagePicker.tsx         IT / ES / EN picker, same drawer pattern as CitySelector
+    LanguagePicker.tsx         EN / ES / IT picker, same drawer pattern as CitySelector
     EclipseHero.tsx            city, clock, countdown, contextual status
     Countdown.tsx              container-query-sized rolling-digit countdown
     ContextualStatus.tsx       the message that changes with time (and total/partial)
@@ -135,18 +136,19 @@ src/
     weather.ts                 seam for a future weather API, mock varied per city
     eclipseGeometry.ts         Moon transit and Sun-coverage fraction, per city
     totality.ts                shared logic for the 76-second script
-    i18n.ts                    IT / ES / EN dictionaries
+    i18n.ts                    EN / ES / IT dictionaries
     utils.ts                   shadcn's cn()
     useCompassHeading.ts       orientation sensors (with iOS permission prompt)
     useNow.ts                  live clock + ?t= simulation (always against Europe/Madrid)
 scripts/
-  generate-icons.mjs           PWA icons as real PNGs, no dependencies
-  verify-sky.mjs               recomputes planet/star positions for A Coruña
-  verify-dial.mjs              renders the Sun/Moon dial to PNG for a visual check
-  verify-cities.mjs            cross-checks all 16 cities against the app's own solar formula
-  verify-countdown-fit.mjs     re-derives the countdown's container-query font-size formulas
+  generate-icons.mjs         PWA icons as real PNGs, no dependencies
+  generate-og-image.mjs      social-share preview image, same PNG approach
+  verify-sky.mjs             recomputes planet/star positions for A Coruña
+  verify-dial.mjs            renders the Sun/Moon dial to PNG for a visual check
+  verify-cities.mjs          cross-checks all 16 cities against the app's own solar formula
+  verify-countdown-fit.mjs   re-derives the countdown's container-query font-size formulas
 public/
-  manifest.webmanifest, sw.js, icons/
+  manifest.webmanifest, sw.js, og-image.png, icons/
 ```
 
 ## The Sun/Moon dial
@@ -287,6 +289,15 @@ keeps working with no signal at all, the likely condition on a cliff at O Porti�
 navigation controls, so they get a real 44px touch target (`h-11`) rather than just enough padding
 to look right — a WCAG 2.5.5 / Apple HIG minimum that matters more, not less, when the app is used
 outdoors with imprecise finger contact.
+
+**Link previews.** For a while the app had no `openGraph`/`twitter` metadata at all, so sharing the
+link fell back to whatever a platform could scrape — usually the old Italian `<title>` and no
+image. `layout.tsx` now declares both explicitly, in English, with an absolute image URL (the one
+metadata field that genuinely needs to be absolute: external crawlers fetch it without the page's
+URL context, unlike the app's other, deliberately relative, icon paths). The image itself
+(`public/og-image.png`, `npm run og-image`) is generated the same dependency-free way as the app
+icons — no `sharp`/`satori`/headless-browser pipeline for a file that's committed once and never
+regenerated in CI.
 
 ## A note on observation spots
 

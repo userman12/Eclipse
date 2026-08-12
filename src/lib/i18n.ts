@@ -1,18 +1,18 @@
 /**
  * Minimal three-language dictionary (no i18n library).
- * Italian is the default UI language; Spanish and English are available
+ * English is the default UI language; Spanish and Italian are available
  * because the app is used across 16 cities in six countries.
  */
 
-export type Lang = 'it' | 'es' | 'en';
+export type Lang = 'en' | 'es' | 'it';
 
-export const LANGS: Lang[] = ['it', 'es', 'en'];
+export const LANGS: Lang[] = ['en', 'es', 'it'];
 
 /** Each language's own name, in its own language — never translated. */
 export const LANG_NATIVE_NAME: Record<Lang, string> = {
-  it: 'Italiano',
-  es: 'Español',
   en: 'English',
+  es: 'Español',
+  it: 'Italiano',
 };
 
 const it = {
@@ -434,6 +434,9 @@ const it = {
   },
 };
 
+// Shape only — `it` just happens to be the dictionary defined first in the
+// file. It has no bearing on which language is the default (see LANGS
+// and LanguageProvider.tsx for that).
 type Dict = typeof it;
 
 const es: Dict = {
@@ -1258,7 +1261,7 @@ const en: Dict = {
   },
 };
 
-export const dictionaries: Record<Lang, Dict> = { it, es, en };
+export const dictionaries: Record<Lang, Dict> = { en, es, it };
 
 export type Copy = Dict;
 

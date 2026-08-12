@@ -14,7 +14,7 @@ type LanguageContextValue = {
 const LanguageContext = createContext<LanguageContextValue | null>(null);
 
 export function LanguageProvider({ children }: { children: React.ReactNode }) {
-  const [lang, setLangState] = useState<Lang>('it');
+  const [lang, setLangState] = useState<Lang>('en');
 
   useEffect(() => {
     const stored = window.localStorage.getItem(STORAGE_KEY);
@@ -22,11 +22,11 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
       setLangState(stored);
       return;
     }
-    // Someone opening this with a Spanish or English phone gets that
-    // language automatically — useful across a 16-city, 6-country list.
+    // English is the default; a Spanish or Italian device switches
+    // automatically — useful across a 16-city, 6-country list.
     const device = navigator.language?.toLowerCase() ?? '';
     if (device.startsWith('es')) setLangState('es');
-    else if (device.startsWith('en')) setLangState('en');
+    else if (device.startsWith('it')) setLangState('it');
   }, []);
 
   useEffect(() => {

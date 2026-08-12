@@ -35,7 +35,7 @@ export default function EclipseHero({
   const { city } = useCity();
   const label = cityLabel(t, city.id);
 
-  const localeTag = { it: 'it-IT', es: 'es-ES', en: 'en-GB' }[lang];
+  const localeTag = { en: 'en-GB', es: 'es-ES', it: 'it-IT' }[lang];
   const dateLabel = new Intl.DateTimeFormat(localeTag, {
     day: 'numeric',
     month: 'long',

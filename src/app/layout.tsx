@@ -21,18 +21,29 @@ const fraunces = Fraunces({
   display: 'swap',
 });
 
+// The app lives at one fixed, known URL — no per-environment base to derive.
+// Used to build an absolute og:image URL: that field specifically requires a
+// fully-qualified URL for external crawlers (Twitter, Facebook, Slack,
+// iMessage, WhatsApp...) to be able to fetch it, unlike the relative
+// `icons` paths below, which are deliberately left relative so favicons
+// keep resolving correctly both in local dev and under the GitHub Pages
+// project subpath.
+const SITE_URL = 'https://userman12.github.io/Eclipse/';
+
+const DESCRIPTION =
+  'Live guide to the 12 August 2026 solar eclipse across 16 verified cities: where to go, where to look, how much time is left, and when it’s safe to remove your glasses.';
+
 export const metadata: Metadata = {
-  title: 'Coruña Eclipse Navigator',
-  description:
-    'A live guide to the 12 August 2026 solar eclipse across 16 verified cities, from totality in A Coruña and Reykjavík to the deep partial phases in London, Paris and Rome: where to go, where to look, how much time is left, and when it’s safe to remove your glasses.',
-  applicationName: 'Coruña Eclipse Navigator',
+  title: 'Eclipse',
+  description: DESCRIPTION,
+  applicationName: 'Eclipse',
   // Relative on purpose: the app has a single route, so these resolve
   // correctly both at the site root (local dev) and under a GitHub Pages
   // project subpath (/Eclipse/) without needing basePath-aware plumbing.
   manifest: 'manifest.webmanifest',
   appleWebApp: {
     capable: true,
-    title: 'Eclipse Navigator',
+    title: 'Eclipse',
     statusBarStyle: 'black-translucent',
   },
   formatDetection: { telephone: false, date: false, address: false },
@@ -42,6 +53,28 @@ export const metadata: Metadata = {
       { url: 'icons/icon-512.png', sizes: '512x512', type: 'image/png' },
     ],
     apple: [{ url: 'icons/apple-touch-icon.png', sizes: '180x180' }],
+  },
+  openGraph: {
+    title: 'Eclipse',
+    description: DESCRIPTION,
+    url: SITE_URL,
+    siteName: 'Eclipse',
+    locale: 'en_US',
+    type: 'website',
+    images: [
+      {
+        url: `${SITE_URL}og-image.png`,
+        width: 1200,
+        height: 630,
+        alt: 'A total solar eclipse — a black disk ringed by a golden corona above a dark sea horizon',
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Eclipse',
+    description: DESCRIPTION,
+    images: [`${SITE_URL}og-image.png`],
   },
 };
 
@@ -55,7 +88,7 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="it" className={cn(geist.variable, fraunces.variable, 'dark')}>
+    <html lang="en" className={cn(geist.variable, fraunces.variable, 'dark')}>
       <body>
         <AuroraBackground />
         <LanguageProvider>

@@ -12,7 +12,9 @@ permissions:
 
 concurrency:
   group: pages
-  cancel-in-progress: true
+  # false, matching GitHub's own Pages template: cancelling a deploy mid-way
+  # can leave the Pages lock in an inconsistent state. Runs queue instead.
+  cancel-in-progress: false
 
 jobs:
   build:

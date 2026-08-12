@@ -8,6 +8,13 @@ export type Lang = 'it' | 'es' | 'en';
 
 export const LANGS: Lang[] = ['it', 'es', 'en'];
 
+/** Each language's own name, in its own language — never translated. */
+export const LANG_NATIVE_NAME: Record<Lang, string> = {
+  it: 'Italiano',
+  es: 'Español',
+  en: 'English',
+};
+
 const it = {
   appName: 'Coruña Eclipse Navigator',
   tagline: 'Eclissi totale di Sole · 12 agosto 2026',

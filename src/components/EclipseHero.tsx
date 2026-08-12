@@ -80,7 +80,13 @@ export default function EclipseHero({
       <GlassCard live>
         <CardContent>
           <div className="flex items-start justify-between gap-3">
-            <div className="min-w-0 flex-1">
+            {/* A container-query context: the countdown's digits are sized
+                in cqw (percent of THIS box's actual width), not vw (percent
+                of the full viewport). vw has no way to know EclipseDial and
+                the card padding already ate part of the row, so at some
+                phone widths it either overflowed or left the row half
+                empty; cqw measures the real remaining space directly. */}
+            <div className="min-w-0 flex-1 @container">
               {state.target ? (
                 <Countdown
                   ms={state.msToTarget}

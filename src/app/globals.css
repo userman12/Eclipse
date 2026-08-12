@@ -20,21 +20,44 @@
   --font-display: var(--font-fraunces), Georgia, serif;
   --font-heading: var(--font-fraunces), Georgia, serif;
 
-  /* Used only when the countdown shows a single group (seconds alone,
-     under 2 minutes to go) — nothing else shares the row, so it can safely
-     use the full vw-based scale. */
-  --text-countdown: clamp(3.25rem, 17vw, 5.75rem);
+  /* All four tokens below are sized in `cqw` — percent of the countdown's
+     own container width (see the `@container` on its wrapper in
+     EclipseHero.tsx) — not `vw` (percent of the full viewport). vw had no
+     way to know the live EclipseDial and the card/page padding had already
+     claimed part of the row, so depending on the device it either
+     overflowed (digits + unit collided, or the row wrapped) or left a
+     visibly dead gap next to the dial. cqw measures the real remaining
+     space directly, so the same formula fits any phone correctly instead
+     of being hand-tuned against one test device.
+
+     The pair/triple/quad formulas are solved algebra, not guesses: each is
+     `calc(A*cqw - Bpx)`, derived so that digits + gaps + unit labels add up
+     to (container width − 14px) at ANY container size — see
+     scripts/verify-countdown-fit.mjs. Re-derive them there if the digit
+     box ratio, gap, or unit font sizes in Countdown.tsx ever change. */
+
+  /* Single group (seconds alone, under 2 minutes to go) — kept moderate on
+     purpose rather than solved for max fill: a lone number filling the
+     entire row would look oversized next to the dial, not dramatic. */
+  --text-countdown: clamp(3.25rem, 27cqw, 5.75rem);
   --text-countdown--line-height: 1;
   --text-countdown--letter-spacing: -0.035em;
 
-  /* Used for the two-group countdown (minutes + seconds, the common case
-     under an hour to go). Deliberately smaller than --text-countdown: two
-     groups plus their unit labels have to share the row with the live
-     EclipseDial next to them, and the full-size clamp left no margin on a
-     360–390px phone. */
-  --text-countdown-pair: clamp(2.75rem, 13vw, 4.5rem);
+  /* Two groups (minutes + seconds, the common case under an hour to go). */
+  --text-countdown-pair: clamp(2rem, calc(36.76cqw - 28.5px), 4.75rem);
   --text-countdown-pair--line-height: 1;
   --text-countdown-pair--letter-spacing: -0.03em;
+
+  /* Three groups (hours + minutes + seconds). */
+  --text-countdown-triple: clamp(1.25rem, calc(24.51cqw - 23.2px), 2.75rem);
+  --text-countdown-triple--line-height: 1;
+  --text-countdown-triple--letter-spacing: -0.02em;
+
+  /* Four groups (days + hours + minutes + seconds) — rare, only when the
+     app is opened more than a day ahead of the eclipse. */
+  --text-countdown-quad: clamp(0.9rem, calc(18.38cqw - 17.1px), 2rem);
+  --text-countdown-quad--line-height: 1;
+  --text-countdown-quad--letter-spacing: -0.015em;
 
   --animate-sun-breathe: sun-breathe 6s ease-in-out infinite;
   --animate-glass-sweep: glass-sweep 16s linear infinite;
@@ -230,15 +253,15 @@
     isolation: isolate;
     background-image: linear-gradient(
       148deg,
-      color-mix(in oklab, var(--color-moon) 12%, transparent) 0%,
-      color-mix(in oklab, var(--color-moon) 3%, transparent) 38%,
-      transparent 78%
+      color-mix(in oklab, var(--color-moon) 17%, transparent) 0%,
+      color-mix(in oklab, var(--color-moon) 5%, transparent) 42%,
+      transparent 80%
     );
-    -webkit-backdrop-filter: blur(20px) saturate(175%) brightness(1.04);
-    backdrop-filter: blur(20px) saturate(175%) brightness(1.04);
+    -webkit-backdrop-filter: blur(26px) saturate(195%) brightness(1.06);
+    backdrop-filter: blur(26px) saturate(195%) brightness(1.06);
     box-shadow:
-      inset 0 1px 0 0 color-mix(in oklab, var(--color-moon) 24%, transparent),
-      inset 0 -1px 0 0 rgb(0 0 0 / 0.28),
+      inset 0 1.5px 0 0 color-mix(in oklab, var(--color-moon) 32%, transparent),
+      inset 0 -1px 0 0 rgb(0 0 0 / 0.3),
       0 1px 2px 0 rgb(0 0 0 / 0.35),
       0 24px 48px -28px rgb(0 0 0 / 0.85);
   }
@@ -254,10 +277,10 @@
     padding: 1px;
     background: linear-gradient(
       145deg,
-      color-mix(in oklab, var(--color-moon) 55%, transparent) 0%,
+      color-mix(in oklab, var(--color-moon) 65%, transparent) 0%,
       transparent 32%,
       transparent 62%,
-      color-mix(in oklab, var(--color-moon) 22%, transparent) 100%
+      color-mix(in oklab, var(--color-moon) 28%, transparent) 100%
     );
     -webkit-mask:
       linear-gradient(#000 0 0) content-box,
@@ -294,13 +317,13 @@
     isolation: isolate;
     background-image: linear-gradient(
       150deg,
-      color-mix(in oklab, var(--color-moon) 9%, transparent) 0%,
-      color-mix(in oklab, var(--color-moon) 3%, transparent) 60%,
+      color-mix(in oklab, var(--color-moon) 12%, transparent) 0%,
+      color-mix(in oklab, var(--color-moon) 4%, transparent) 60%,
       transparent 100%
     );
     box-shadow:
-      inset 0 1px 0 0 color-mix(in oklab, var(--color-moon) 16%, transparent),
-      inset 0 0 0 1px color-mix(in oklab, var(--color-moon) 7%, transparent);
+      inset 0 1px 0 0 color-mix(in oklab, var(--color-moon) 20%, transparent),
+      inset 0 0 0 1px color-mix(in oklab, var(--color-moon) 9%, transparent);
   }
 
   /* A denser variant for surfaces that must stay readable in direct sunlight. */

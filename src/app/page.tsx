@@ -13,7 +13,7 @@ import EclipseHero from '@/components/EclipseHero';
 import EclipseTimeline from '@/components/EclipseTimeline';
 import { staggerVariants } from '@/components/GlassCard';
 import HorizonView from '@/components/HorizonView';
-import LanguageToggle from '@/components/LanguageToggle';
+import LanguagePicker from '@/components/LanguagePicker';
 import ObservationSpots from '@/components/ObservationSpots';
 import PartialCityNotice from '@/components/PartialCityNotice';
 import PerseidNight from '@/components/PerseidNight';
@@ -92,19 +92,25 @@ export default function Home() {
 
   return (
     <main className="pt-safe mx-auto w-full max-w-xl px-3 pb-32">
+      {/* One glass bar rather than bare text next to two separate chips —
+          reads as a single floating nav surface, and its own padding keeps
+          the wordmark, city and language controls from ever competing for
+          space the way three independent elements did. */}
       <motion.div
         initial={{ opacity: 0, y: -8 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
-        className="mb-3 flex items-center justify-between gap-2 px-1 pt-2"
+        className="glass mt-2 mb-4 flex items-center justify-between gap-2 rounded-full py-1.5 pr-1.5 pl-3.5"
       >
         <p className="text-muted-foreground flex min-w-0 items-center gap-1.5 text-xs font-semibold tracking-[0.18em] uppercase">
           <CloudSun size={14} className="text-corona shrink-0" aria-hidden />
-          <span className="truncate">{t.appName}</span>
+          {/* Short brand mark on purpose: it must survive the header even
+              on a 360px phone with a long city name selected. */}
+          <span className="truncate">Eclipse</span>
         </p>
-        <div className="flex shrink-0 items-center gap-2">
+        <div className="flex shrink-0 items-center gap-1.5">
           <CitySelector />
-          <LanguageToggle />
+          <LanguagePicker />
         </div>
       </motion.div>
 

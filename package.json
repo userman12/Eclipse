@@ -10,7 +10,8 @@
     "icons": "node scripts/generate-icons.mjs",
     "verify:sky": "node scripts/verify-sky.mjs",
     "verify:dial": "node scripts/verify-dial.mjs",
-    "verify:cities": "node scripts/verify-cities.mjs"
+    "verify:cities": "node scripts/verify-cities.mjs",
+    "verify:countdown-fit": "node scripts/verify-countdown-fit.mjs"
   },
   "dependencies": {
     "@tailwindcss/postcss": "^4.3.3",

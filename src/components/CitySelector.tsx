@@ -78,10 +78,10 @@ export default function CitySelector() {
       <DrawerTrigger asChild>
         <button
           type="button"
-          className="glass flex items-center gap-1.5 rounded-full px-3 py-1.5 text-left"
+          className="glass-inset flex items-center gap-1.5 rounded-full px-3 py-1.5 text-left"
         >
           <MapPin size={13} className="text-corona shrink-0" aria-hidden />
-          <span className="max-w-[8rem] truncate text-sm font-semibold">{label.name}</span>
+          <span className="max-w-[6rem] truncate text-sm font-semibold">{label.name}</span>
           <ChevronDown size={14} className="text-muted-foreground shrink-0" aria-hidden />
         </button>
       </DrawerTrigger>

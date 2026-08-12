@@ -68,7 +68,7 @@ export default function EclipseTimeline({ city, state }: { city: City; state: Ec
                   )}
                 </span>
 
-                <div className="flex min-w-0 flex-1 items-center justify-between gap-3">
+                <div className="flex min-w-0 flex-1 items-center gap-3">
                   <span
                     className={cn(
                       'truncate text-[0.95rem] transition-colors',
@@ -82,10 +82,10 @@ export default function EclipseTimeline({ city, state }: { city: City; state: Ec
                     {t.phases[phase.id]}
                   </span>
 
-                  {/* Badge sits above the time, in normal flow — not
-                      absolutely positioned — so it can never overlap the
-                      row above it or the time text next to it. */}
-                  <span className="flex shrink-0 flex-col items-end gap-0.5">
+                  {/* Badge sits inline, between the phase name and the time,
+                      never absolutely positioned — so it participates in the
+                      row's own height and can't overlap anything else. */}
+                  <span className="ml-auto flex shrink-0 items-center gap-2">
                     {isNext && (
                       <Badge className="bg-corona/15 text-corona h-4 px-2 text-[0.6rem] font-bold tracking-widest uppercase">
                         {t.timeline.next}

@@ -46,39 +46,42 @@ function Rolling({ value, className }: { value: string; className?: string }) {
   );
 }
 
-function Unit({ children, size }: { children: React.ReactNode; size: 'lg' | 'sm' }) {
+function Unit({ children, className }: { children: React.ReactNode; className?: string }) {
   return (
-    <span
-      className={cn(
-        'text-muted-foreground shrink-0 font-semibold tracking-[0.12em] uppercase',
-        size === 'lg' ? 'text-xs sm:text-sm' : 'text-[0.6rem] sm:text-[0.65rem]',
-      )}
-    >
+    <span className={cn('text-muted-foreground shrink-0 font-semibold tracking-[0.12em] uppercase', className)}>
       {children}
     </span>
   );
 }
 
 /**
- * A digit block, plus a unit label with a gap sized relative to the digits
- * (not a fixed pixel value) — at large sizes a fixed 4px gap reads as no gap
- * at all, and the unit visually collides with the digit's edge.
+ * How big the digits get depends on how many groups share the row, tuned so
+ * each tier fills the space next to the EclipseDial on a 360–390px phone
+ * without overflowing it — not just "safe", but sized to use the room that's
+ * actually there. Each tier also carries its own gap: a fixed few pixels
+ * between digit and unit reads as generous at a small size and as a
+ * collision at a large one, so the gap scales with the tier too.
  */
-function Group({
-  value,
-  unit,
-  digitClass,
-  size,
-}: {
-  value: number;
-  unit: string;
-  digitClass: string;
-  size: 'lg' | 'sm';
-}) {
+type Tier = { digitClass: string; unitClass: string; gap: string };
+
+const TIERS = {
+  solo: { digitClass: 'text-countdown font-display', unitClass: 'text-xs sm:text-sm', gap: 'gap-2 sm:gap-3' },
+  pair: { digitClass: 'text-countdown-pair font-display', unitClass: 'text-xs sm:text-sm', gap: 'gap-1.5 sm:gap-2' },
+  triple: { digitClass: 'text-countdown-triple font-display', unitClass: 'text-[0.65rem]', gap: 'gap-1.5' },
+  quad: { digitClass: 'text-countdown-quad font-display', unitClass: 'text-[0.55rem]', gap: 'gap-1' },
+} as const satisfies Record<string, Tier>;
+
+const GROUP_GAP: Record<'pair' | 'triple' | 'quad', string> = {
+  pair: 'gap-x-4 gap-y-1',
+  triple: 'gap-x-3 gap-y-1',
+  quad: 'gap-x-2 gap-y-1',
+};
+
+function Group({ value, unit, tier }: { value: number; unit: string; tier: Tier }) {
   return (
-    <span className={cn('flex items-end', size === 'lg' ? 'gap-1.5 sm:gap-2' : 'gap-1')}>
-      <Rolling value={String(value).padStart(2, '0')} className={cn('font-display', digitClass)} />
-      <Unit size={size}>{unit}</Unit>
+    <span className={cn('flex items-end', tier.gap)}>
+      <Rolling value={String(value).padStart(2, '0')} className={tier.digitClass} />
+      <Unit className={tier.unitClass}>{unit}</Unit>
     </span>
   );
 }
@@ -114,15 +117,8 @@ export default function Countdown({
         ...(showSeconds ? [{ value: seconds, unit: c.seconds }] : []),
       ];
 
-  // Two groups (the common case, minutes+seconds) get the larger
-  // text-countdown-pair digits. Three or four groups (hours or days still
-  // showing) share a smaller, fixed, viewport-independent size instead of
-  // mixing one huge group with smaller ones — that mismatch is what caused
-  // digits to overflow their row and collide with their unit label on
-  // narrow phones.
-  const compact = groups.length > 2;
-  const digitClass = compact ? 'text-2xl sm:text-3xl' : 'text-countdown-pair';
-  const groupGap = compact ? 'gap-x-3 gap-y-1' : 'gap-x-4 gap-y-1';
+  const tierKey = groups.length >= 4 ? 'quad' : groups.length === 3 ? 'triple' : 'pair';
+  const tier = TIERS[tierKey];
 
   return (
     <div>
@@ -137,27 +133,19 @@ export default function Countdown({
 
       <motion.div
         layout
-        className={cn('mt-1.5 flex flex-wrap items-end', groupGap, toneClass[tone])}
+        className={cn('mt-1.5 flex flex-wrap items-end', GROUP_GAP[tierKey], toneClass[tone])}
       >
         {finalCountdown ? (
           <motion.span
-            className="flex items-end gap-2 sm:gap-3"
+            className={cn('flex items-end', TIERS.solo.gap)}
             animate={tone === 'critical' ? { opacity: [1, 0.5, 1] } : { opacity: 1 }}
             transition={{ duration: 1, repeat: tone === 'critical' ? Infinity : 0 }}
           >
-            <Rolling value={String(totalSeconds)} className="text-countdown font-display" />
-            <Unit size="lg">{c.seconds}</Unit>
+            <Rolling value={String(totalSeconds)} className={TIERS.solo.digitClass} />
+            <Unit className={TIERS.solo.unitClass}>{c.seconds}</Unit>
           </motion.span>
         ) : (
-          groups.map((g, i) => (
-            <Group
-              key={i}
-              value={g.value}
-              unit={g.unit}
-              digitClass={digitClass}
-              size={compact ? 'sm' : 'lg'}
-            />
-          ))
+          groups.map((g, i) => <Group key={i} value={g.value} unit={g.unit} tier={tier} />)
         )}
       </motion.div>
     </div>

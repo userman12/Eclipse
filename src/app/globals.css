@@ -20,9 +20,21 @@
   --font-display: var(--font-fraunces), Georgia, serif;
   --font-heading: var(--font-fraunces), Georgia, serif;
 
+  /* Used only when the countdown shows a single group (seconds alone,
+     under 2 minutes to go) — nothing else shares the row, so it can safely
+     use the full vw-based scale. */
   --text-countdown: clamp(3.25rem, 17vw, 5.75rem);
   --text-countdown--line-height: 1;
   --text-countdown--letter-spacing: -0.035em;
+
+  /* Used for the two-group countdown (minutes + seconds, the common case
+     under an hour to go). Deliberately smaller than --text-countdown: two
+     groups plus their unit labels have to share the row with the live
+     EclipseDial next to them, and the full-size clamp left no margin on a
+     360–390px phone. */
+  --text-countdown-pair: clamp(2.75rem, 13vw, 4.5rem);
+  --text-countdown-pair--line-height: 1;
+  --text-countdown-pair--letter-spacing: -0.03em;
 
   --animate-sun-breathe: sun-breathe 6s ease-in-out infinite;
   --animate-glass-sweep: glass-sweep 16s linear infinite;

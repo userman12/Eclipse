@@ -68,7 +68,7 @@ export default function EclipseTimeline({ city, state }: { city: City; state: Ec
                   )}
                 </span>
 
-                <div className="flex min-w-0 flex-1 items-baseline justify-between gap-3">
+                <div className="flex min-w-0 flex-1 items-center justify-between gap-3">
                   <span
                     className={cn(
                       'truncate text-[0.95rem] transition-colors',
@@ -81,31 +81,30 @@ export default function EclipseTimeline({ city, state }: { city: City; state: Ec
                   >
                     {t.phases[phase.id]}
                   </span>
-                  <span
-                    className={cn(
-                      'numeric shrink-0 text-sm',
-                      isNext
-                        ? 'text-corona font-bold'
-                        : isPast
-                          ? 'text-muted-foreground/70'
-                          : 'text-muted-foreground',
+
+                  {/* Badge sits above the time, in normal flow — not
+                      absolutely positioned — so it can never overlap the
+                      row above it or the time text next to it. */}
+                  <span className="flex shrink-0 flex-col items-end gap-0.5">
+                    {isNext && (
+                      <Badge className="bg-corona/15 text-corona h-4 px-2 text-[0.6rem] font-bold tracking-widest uppercase">
+                        {t.timeline.next}
+                      </Badge>
                     )}
-                  >
-                    {inTotality ? phase.time : toHM(phase.time)}
+                    <span
+                      className={cn(
+                        'numeric text-sm',
+                        isNext
+                          ? 'text-corona font-bold'
+                          : isPast
+                            ? 'text-muted-foreground/70'
+                            : 'text-muted-foreground',
+                      )}
+                    >
+                      {inTotality ? phase.time : toHM(phase.time)}
+                    </span>
                   </span>
                 </div>
-
-                {isNext && (
-                  <motion.span
-                    layoutId="timeline-next"
-                    className="absolute -top-1 right-0"
-                    transition={{ type: 'spring', stiffness: 200, damping: 26 }}
-                  >
-                    <Badge className="bg-corona/15 text-corona h-4 px-2 text-[0.6rem] font-bold tracking-widest uppercase">
-                      {t.timeline.next}
-                    </Badge>
-                  </motion.span>
-                )}
               </li>
             );
           })}

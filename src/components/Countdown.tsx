@@ -19,7 +19,7 @@ const digitSpring = { type: 'spring', stiffness: 320, damping: 30, mass: 0.7 } a
 /** A single digit that rolls vertically when it changes. */
 function Digit({ char }: { char: string }) {
   return (
-    <span className="relative inline-block h-[1.05em] w-[0.62em] overflow-hidden align-baseline">
+    <span className="relative inline-block h-[1.15em] w-[0.68em] overflow-hidden align-bottom">
       <AnimatePresence initial={false} mode="popLayout">
         <motion.span
           key={char}
@@ -46,30 +46,39 @@ function Rolling({ value, className }: { value: string; className?: string }) {
   );
 }
 
-function Unit({ children }: { children: React.ReactNode }) {
+function Unit({ children, size }: { children: React.ReactNode; size: 'lg' | 'sm' }) {
   return (
-    <span className="text-muted-foreground text-xs font-semibold tracking-[0.16em] uppercase">
+    <span
+      className={cn(
+        'text-muted-foreground shrink-0 font-semibold tracking-[0.12em] uppercase',
+        size === 'lg' ? 'text-xs sm:text-sm' : 'text-[0.6rem] sm:text-[0.65rem]',
+      )}
+    >
       {children}
     </span>
   );
 }
 
+/**
+ * A digit block, plus a unit label with a gap sized relative to the digits
+ * (not a fixed pixel value) — at large sizes a fixed 4px gap reads as no gap
+ * at all, and the unit visually collides with the digit's edge.
+ */
 function Group({
   value,
   unit,
+  digitClass,
   size,
 }: {
   value: number;
   unit: string;
-  size: 'lg' | 'md';
+  digitClass: string;
+  size: 'lg' | 'sm';
 }) {
   return (
-    <span className="flex items-baseline gap-1">
-      <Rolling
-        value={String(value).padStart(2, '0')}
-        className={cn('font-display', size === 'lg' ? 'text-countdown' : 'text-5xl')}
-      />
-      <Unit>{unit}</Unit>
+    <span className={cn('flex items-end', size === 'lg' ? 'gap-1.5 sm:gap-2' : 'gap-1')}>
+      <Rolling value={String(value).padStart(2, '0')} className={cn('font-display', digitClass)} />
+      <Unit size={size}>{unit}</Unit>
     </span>
   );
 }
@@ -92,6 +101,29 @@ export default function Countdown({
   // Under two minutes the seconds are the whole story: show them alone, huge.
   const finalCountdown = totalSeconds < 120;
 
+  const showDays = days > 0;
+  const showHours = days > 0 || hours > 0;
+  const showSeconds = days === 0;
+
+  const groups = finalCountdown
+    ? []
+    : [
+        ...(showDays ? [{ value: days, unit: c.days }] : []),
+        ...(showHours ? [{ value: hours, unit: c.hours }] : []),
+        { value: minutes, unit: c.minutes },
+        ...(showSeconds ? [{ value: seconds, unit: c.seconds }] : []),
+      ];
+
+  // Two groups (the common case, minutes+seconds) get the larger
+  // text-countdown-pair digits. Three or four groups (hours or days still
+  // showing) share a smaller, fixed, viewport-independent size instead of
+  // mixing one huge group with smaller ones — that mismatch is what caused
+  // digits to overflow their row and collide with their unit label on
+  // narrow phones.
+  const compact = groups.length > 2;
+  const digitClass = compact ? 'text-2xl sm:text-3xl' : 'text-countdown-pair';
+  const groupGap = compact ? 'gap-x-3 gap-y-1' : 'gap-x-4 gap-y-1';
+
   return (
     <div>
       <div className="flex items-center justify-between gap-3">
@@ -105,29 +137,27 @@ export default function Countdown({
 
       <motion.div
         layout
-        className={cn(
-          'mt-1.5 flex flex-wrap items-baseline gap-x-4 gap-y-1',
-          toneClass[tone],
-        )}
+        className={cn('mt-1.5 flex flex-wrap items-end', groupGap, toneClass[tone])}
       >
         {finalCountdown ? (
           <motion.span
-            className="flex items-baseline gap-2"
+            className="flex items-end gap-2 sm:gap-3"
             animate={tone === 'critical' ? { opacity: [1, 0.5, 1] } : { opacity: 1 }}
             transition={{ duration: 1, repeat: tone === 'critical' ? Infinity : 0 }}
           >
             <Rolling value={String(totalSeconds)} className="text-countdown font-display" />
-            <Unit>{c.seconds}</Unit>
+            <Unit size="lg">{c.seconds}</Unit>
           </motion.span>
         ) : (
-          <>
-            {days > 0 && <Group value={days} unit={c.days} size="lg" />}
-            {(days > 0 || hours > 0) && (
-              <Group value={hours} unit={c.hours} size={days === 0 ? 'lg' : 'md'} />
-            )}
-            <Group value={minutes} unit={c.minutes} size={days === 0 && hours === 0 ? 'lg' : 'md'} />
-            {days === 0 && <Group value={seconds} unit={c.seconds} size="md" />}
-          </>
+          groups.map((g, i) => (
+            <Group
+              key={i}
+              value={g.value}
+              unit={g.unit}
+              digitClass={digitClass}
+              size={compact ? 'sm' : 'lg'}
+            />
+          ))
         )}
       </motion.div>
     </div>

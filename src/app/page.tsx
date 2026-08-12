@@ -98,11 +98,11 @@ export default function Home() {
         transition={{ duration: 0.5 }}
         className="mb-3 flex items-center justify-between gap-2 px-1 pt-2"
       >
-        <p className="text-muted-foreground flex shrink-0 items-center gap-1.5 text-xs font-semibold tracking-[0.18em] uppercase">
-          <CloudSun size={14} className="text-corona" aria-hidden />
-          {t.appName}
+        <p className="text-muted-foreground flex min-w-0 items-center gap-1.5 text-xs font-semibold tracking-[0.18em] uppercase">
+          <CloudSun size={14} className="text-corona shrink-0" aria-hidden />
+          <span className="truncate">{t.appName}</span>
         </p>
-        <div className="flex items-center gap-2">
+        <div className="flex shrink-0 items-center gap-2">
           <CitySelector />
           <LanguageToggle />
         </div>

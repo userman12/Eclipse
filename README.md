@@ -70,6 +70,7 @@ src/
     HorizonView.tsx            orizzonte marino, Sole basso, altezza in gradi
     EclipseTimeline.tsx        le cinque fasi con orari locali
     SafetyNotice.tsx           pill di sicurezza persistente + Drawer con le regole
+    LiveGuide.tsx              riquadro live sotto il countdown: occhiali sì/no + passo corrente
     TotalityScript.tsx         i 76 secondi, passo per passo, con step live
     PhenomenaGuide.tsx         glossario dei fenomeni: cosa sono e come riconoscerli
     SkyDuringTotality.tsx      mappa del cielo a Ovest + pianeti e stelle visibili
@@ -84,6 +85,7 @@ src/
     time.ts                    fasi → istanti UTC, stato temporale, countdown
     sun.ts                     posizione solare (NOAA low-precision)
     weather.ts                 seam per una futura API meteo
+    totality.ts                logica condivisa della scaletta dei 76 secondi
     i18n.ts                    dizionari IT / ES
     utils.ts                   cn() di shadcn
     useCompassHeading.ts       sensori di orientamento (con permesso iOS)
@@ -94,6 +96,23 @@ scripts/
 public/
   manifest.webmanifest, sw.js, icons/
 ```
+
+## Il riquadro live
+
+Durante i 76 secondi non si naviga: non c'è tempo per scorrere, cambiare tab o leggere una lista e
+decidere. Per questo, da tre minuti prima della totalità, sotto il countdown compare da solo un
+riquadro con **occhiali sì/no** a tutta larghezza (giallo = indossati, bianco = si possono togliere),
+l'istruzione corrente, una barra di avanzamento del passo e un'anteprima del prossimo. Tutto senza
+un tap.
+
+Il riquadro e la scaletta completa nel tab *Totalità* condividono `src/lib/totality.ts`: se
+divergessero sarebbe un bug di sicurezza, non estetico. Le finestre dei passi si sovrappongono
+di proposito, quindi il passo corrente è scelto **per priorità** e, a parità, per partenza più
+recente — altrimenti a −5s "grani di Baily" coprirebbe "anello di diamante: tieni gli occhiali".
+
+Invarianti verificate lungo tutta la finestra, secondo per secondo: occhiali indossati fino a 0s,
+tolti esattamente all'inizio della totalità, rimessi a **+62s** (14 secondi di margine prima che il
+Sole riappaia a +76s), nessun istante scoperto.
 
 ## Il cielo durante la totalità
 

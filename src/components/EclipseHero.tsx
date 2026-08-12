@@ -7,6 +7,7 @@ import { Progress } from '@/components/ui/progress';
 import GlassCard, { revealVariants } from '@/components/GlassCard';
 import Countdown from '@/components/Countdown';
 import ContextualStatus from '@/components/ContextualStatus';
+import LiveGuide from '@/components/LiveGuide';
 import { eclipseEvent } from '@/data/eventData';
 import { useCopy } from '@/lib/LanguageProvider';
 import { formatEventClock, type EclipseState } from '@/lib/time';
@@ -19,7 +20,14 @@ const tones = {
   after: 'calm',
 } as const;
 
-export default function EclipseHero({ state }: { state: EclipseState }) {
+export default function EclipseHero({
+  state,
+  onOpenScript,
+}: {
+  state: EclipseState;
+  /** Lets the live box jump to the full script in the Totalità tab. */
+  onOpenScript?: () => void;
+}) {
   const { lang, t } = useCopy();
 
   const dateLabel = new Intl.DateTimeFormat(lang === 'it' ? 'it-IT' : 'es-ES', {
@@ -81,6 +89,9 @@ export default function EclipseHero({ state }: { state: EclipseState }) {
             className="mt-4 h-1"
             aria-label={t.timeline.title}
           />
+
+          {/* Renders only inside the script window; silent the rest of the time. */}
+          <LiveGuide state={state} onOpenScript={onOpenScript} />
         </CardContent>
       </GlassCard>
 

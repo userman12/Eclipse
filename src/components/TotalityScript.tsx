@@ -8,31 +8,14 @@ import { CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import GlassCard from '@/components/GlassCard';
 import { totalityScript, type ScriptStep } from '@/data/eventData';
 import { useCopy } from '@/lib/LanguageProvider';
-import { T, type EclipseState } from '@/lib/time';
+import {
+  currentStep,
+  formatOffset,
+  isScriptLive,
+  offsetSeconds,
+} from '@/lib/totality';
+import type { EclipseState } from '@/lib/time';
 import { cn } from '@/lib/utils';
-
-/** Signed seconds relative to the start of totality. */
-const offsetSeconds = (now: number) => (now - T.totalityStart) / 1000;
-
-const isActive = (step: ScriptStep, offset: number) =>
-  offset >= step.from && offset < step.to;
-
-/**
- * Several steps overlap on purpose (the diamond ring starts while Baily's
- * beads are still running, the corona while the glasses just came off), so
- * "the current step" cannot be the first match in the list. Pick the most
- * important one — lowest priority number — and among equals the one that
- * started most recently, which is always the more specific instruction.
- */
-function currentStep(offset: number): ScriptStep | null {
-  const active = totalityScript.filter((step) => isActive(step, offset));
-  if (active.length === 0) return null;
-  return active.sort((a, b) => a.priority - b.priority || b.from - a.from)[0];
-}
-
-/** "-20s" / "+34s" — the label people can match against a stopwatch. */
-const formatOffset = (seconds: number) =>
-  `${seconds < 0 ? '−' : '+'}${Math.abs(seconds)}s`;
 
 function GlassesTag({ state }: { state: ScriptStep['glasses'] }) {
   const { t } = useCopy();
@@ -51,16 +34,16 @@ function GlassesTag({ state }: { state: ScriptStep['glasses'] }) {
 }
 
 /**
- * The choreography of totality.
+ * The full choreography of totality.
  *
- * Reading material before the event; a live teleprompter during it. Once the
- * clock is inside the window the active step is highlighted and scrolled to,
- * because 76 seconds is not enough time to read a list and decide.
+ * Reading material before the event; during it, the same step that the live
+ * box under the countdown is showing gets highlighted and scrolled to — both
+ * views share `currentStep` so they can never disagree.
  */
 export default function TotalityScript({ state }: { state: EclipseState }) {
   const { t } = useCopy();
   const offset = offsetSeconds(state.now);
-  const live = offset >= totalityScript[0].from && offset < 90;
+  const live = isScriptLive(offset);
   const activeRef = useRef<HTMLLIElement | null>(null);
 
   const steps = t.script.steps as Record<string, { title: string; body: string }>;

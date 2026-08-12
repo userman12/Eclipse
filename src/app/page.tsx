@@ -42,6 +42,7 @@ export default function Home() {
   const { t } = useCopy();
   const now = useNow();
   const [tzMismatch, setTzMismatch] = useState<string | null>(null);
+  const [tab, setTab] = useState('now');
   const previousStage = useRef<EclipseStage | null>(null);
 
   useEffect(() => setTzMismatch(deviceTimezoneMismatch()), []);
@@ -96,10 +97,10 @@ export default function Home() {
           {/* The hero stays above the tabs: countdown and current instruction
               must never be a tap away, whatever section is open. */}
           <motion.div variants={staggerVariants} initial="hidden" animate="visible">
-            <EclipseHero state={state} />
+            <EclipseHero state={state} onOpenScript={() => setTab('totality')} />
           </motion.div>
 
-          <Tabs defaultValue="now" className="mt-4">
+          <Tabs value={tab} onValueChange={setTab} className="mt-4">
             <TabsList className="glass h-11 w-full rounded-2xl p-1">
               <TabsTrigger value="now" className="rounded-xl text-xs">
                 {t.tabs.now}

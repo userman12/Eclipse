@@ -1,0 +1,331 @@
+@import 'tailwindcss';
+@import 'tw-animate-css';
+@import 'shadcn/tailwind.css';
+
+/* ---------------------------------------------------------------------------
+   Coastal astronomy · liquid glass
+   Dark-only by design: the app is used outdoors, at dusk, facing the Atlantic.
+--------------------------------------------------------------------------- */
+
+@theme {
+  /* Brand palette */
+  --color-atlantic: #071b2b;
+  --color-deep: #123a52;
+  --color-corona: #ffd66b;
+  --color-moon: #dce4e8;
+  --color-sunset: #e8794c;
+  --color-mist: #9cb5c3;
+
+  --font-sans: var(--font-geist), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-fraunces), Georgia, serif;
+  --font-heading: var(--font-fraunces), Georgia, serif;
+
+  --text-countdown: clamp(3.25rem, 17vw, 5.75rem);
+  --text-countdown--line-height: 1;
+  --text-countdown--letter-spacing: -0.035em;
+
+  --animate-sun-breathe: sun-breathe 6s ease-in-out infinite;
+  --animate-glass-sweep: glass-sweep 16s linear infinite;
+  --animate-shimmer: shimmer 2.4s ease-in-out infinite;
+
+  @keyframes sun-breathe {
+    0%,
+    100% {
+      opacity: 0.55;
+      transform: scale(1);
+    }
+    50% {
+      opacity: 0.9;
+      transform: scale(1.06);
+    }
+  }
+
+  @keyframes glass-sweep {
+    to {
+      transform: rotate(1turn);
+    }
+  }
+
+  @keyframes shimmer {
+    0%,
+    100% {
+      opacity: 0.35;
+    }
+    50% {
+      opacity: 1;
+    }
+  }
+
+}
+
+/* The aurora keyframes live outside @theme: they are referenced from inline
+   styles, so Tailwind would otherwise tree-shake them away. */
+@keyframes blob-drift-a {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  33% {
+    transform: translate3d(6vw, -4vh, 0) scale(1.12);
+  }
+  66% {
+    transform: translate3d(-4vw, 5vh, 0) scale(0.94);
+  }
+}
+
+@keyframes blob-drift-b {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) scale(1.05);
+  }
+  50% {
+    transform: translate3d(-7vw, -6vh, 0) scale(0.9);
+  }
+}
+
+@keyframes blob-drift-c {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) scale(0.95);
+  }
+  50% {
+    transform: translate3d(5vw, 7vh, 0) scale(1.15);
+  }
+}
+
+/* shadcn tokens, mapped onto the coastal palette */
+:root {
+  --radius: 1.5rem;
+
+  --background: var(--color-atlantic);
+  --foreground: var(--color-moon);
+
+  /* Cards are glass: the fill stays translucent so the aurora shows through. */
+  --card: color-mix(in oklab, var(--color-deep) 34%, transparent);
+  --card-foreground: var(--color-moon);
+
+  --popover: color-mix(in oklab, var(--color-deep) 88%, black);
+  --popover-foreground: var(--color-moon);
+
+  --primary: var(--color-corona);
+  --primary-foreground: var(--color-atlantic);
+
+  --secondary: color-mix(in oklab, var(--color-deep) 70%, transparent);
+  --secondary-foreground: var(--color-moon);
+
+  --muted: color-mix(in oklab, var(--color-deep) 55%, transparent);
+  --muted-foreground: var(--color-mist);
+
+  --accent: color-mix(in oklab, var(--color-moon) 12%, transparent);
+  --accent-foreground: var(--color-moon);
+
+  --destructive: var(--color-sunset);
+  --destructive-foreground: var(--color-atlantic);
+
+  --border: color-mix(in oklab, var(--color-moon) 14%, transparent);
+  --input: color-mix(in oklab, var(--color-moon) 18%, transparent);
+  --ring: var(--color-corona);
+
+  --chart-1: var(--color-corona);
+  --chart-2: var(--color-mist);
+  --chart-3: var(--color-sunset);
+  --chart-4: var(--color-moon);
+  --chart-5: var(--color-deep);
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+
+  --radius-sm: calc(var(--radius) - 8px);
+  --radius-md: calc(var(--radius) - 6px);
+  --radius-lg: calc(var(--radius) - 3px);
+  --radius-xl: var(--radius);
+}
+
+@layer base {
+  :root {
+    color-scheme: dark;
+  }
+
+  html {
+    -webkit-text-size-adjust: 100%;
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+    text-rendering: optimizeLegibility;
+    overscroll-behavior-y: none;
+  }
+
+  * {
+    @apply border-border;
+  }
+
+  /* Outdoor use: no tap flashes, no accidental text selection. */
+  button,
+  a,
+  [role='button'] {
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+  }
+
+  ::selection {
+    @apply bg-corona text-atlantic;
+  }
+
+  .numeric {
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: 'tnum' 1;
+  }
+}
+
+@layer components {
+  /* -------------------------------------------------------------------------
+     Liquid glass
+     Four stacked ingredients make the material read as glass rather than as a
+     flat translucent panel:
+       1. a refractive fill (blur + saturation lift on what is behind)
+       2. a directional body tint, brighter where the light comes from
+       3. a 1px specular rim, bright top-left and dim bottom-right
+       4. an ambient drop shadow that grounds the pane above the background
+  ------------------------------------------------------------------------- */
+  .glass {
+    position: relative;
+    isolation: isolate;
+    background-image: linear-gradient(
+      148deg,
+      color-mix(in oklab, var(--color-moon) 12%, transparent) 0%,
+      color-mix(in oklab, var(--color-moon) 3%, transparent) 38%,
+      transparent 78%
+    );
+    -webkit-backdrop-filter: blur(20px) saturate(175%) brightness(1.04);
+    backdrop-filter: blur(20px) saturate(175%) brightness(1.04);
+    box-shadow:
+      inset 0 1px 0 0 color-mix(in oklab, var(--color-moon) 24%, transparent),
+      inset 0 -1px 0 0 rgb(0 0 0 / 0.28),
+      0 1px 2px 0 rgb(0 0 0 / 0.35),
+      0 24px 48px -28px rgb(0 0 0 / 0.85);
+  }
+
+  /* The refractive rim: a gradient border drawn with a mask, so it can be
+     bright on one edge and almost invisible on the other. */
+  .glass::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    border-radius: inherit;
+    padding: 1px;
+    background: linear-gradient(
+      145deg,
+      color-mix(in oklab, var(--color-moon) 55%, transparent) 0%,
+      transparent 32%,
+      transparent 62%,
+      color-mix(in oklab, var(--color-moon) 22%, transparent) 100%
+    );
+    -webkit-mask:
+      linear-gradient(#000 0 0) content-box,
+      linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask:
+      linear-gradient(#000 0 0) content-box,
+      linear-gradient(#000 0 0);
+    mask-composite: exclude;
+    pointer-events: none;
+  }
+
+  /* Reserved for the few live surfaces: a slow specular sweep across the pane. */
+  .glass-live::after {
+    content: '';
+    position: absolute;
+    inset: -60%;
+    z-index: -1;
+    background: conic-gradient(
+      from 0deg,
+      transparent 0 48%,
+      color-mix(in oklab, var(--color-moon) 9%, transparent) 57%,
+      transparent 66% 100%
+    );
+    animation: var(--animate-glass-sweep);
+    pointer-events: none;
+  }
+
+  /* Panels nested inside a glass pane. Deliberately no backdrop-filter:
+     glass behind glass re-refracts an already blurred layer, which costs a
+     second GPU pass per element and only muddies the result. */
+  .glass-inset {
+    position: relative;
+    isolation: isolate;
+    background-image: linear-gradient(
+      150deg,
+      color-mix(in oklab, var(--color-moon) 9%, transparent) 0%,
+      color-mix(in oklab, var(--color-moon) 3%, transparent) 60%,
+      transparent 100%
+    );
+    box-shadow:
+      inset 0 1px 0 0 color-mix(in oklab, var(--color-moon) 16%, transparent),
+      inset 0 0 0 1px color-mix(in oklab, var(--color-moon) 7%, transparent);
+  }
+
+  /* A denser variant for surfaces that must stay readable in direct sunlight. */
+  .glass-solid {
+    -webkit-backdrop-filter: blur(28px) saturate(190%) brightness(0.92);
+    backdrop-filter: blur(28px) saturate(190%) brightness(0.92);
+    background-color: color-mix(in oklab, var(--color-atlantic) 72%, transparent);
+  }
+
+  .eyebrow {
+    @apply text-[0.68rem] font-semibold tracking-[0.2em] text-muted-foreground uppercase;
+  }
+}
+
+@utility pb-safe {
+  padding-bottom: max(1rem, env(safe-area-inset-bottom));
+}
+
+@utility pt-safe {
+  padding-top: max(0.75rem, env(safe-area-inset-top));
+}
+
+@utility no-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

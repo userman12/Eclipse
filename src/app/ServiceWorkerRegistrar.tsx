@@ -12,7 +12,9 @@ export default function ServiceWorkerRegistrar() {
     if (!('serviceWorker' in navigator)) return;
 
     const register = () => {
-      navigator.serviceWorker.register('/sw.js').catch(() => {
+      // Relative path: registers with a scope matching wherever the app is
+      // hosted, root or a GitHub Pages subpath, without hardcoding either.
+      navigator.serviceWorker.register('sw.js').catch(() => {
         /* offline support is a bonus; never break the page over it */
       });
     };

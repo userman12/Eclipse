@@ -7,10 +7,22 @@
  * Strategy:
  *  - navigations: network first, fall back to the cached shell
  *  - everything else (same-origin): cache first, refresh in the background
+ *
+ * Every URL below is built from `self.registration.scope` rather than
+ * hardcoded as `/…`, so this file works unmodified whether it is served from
+ * the site root (local dev) or a GitHub Pages project subpath (/Eclipse/).
  */
 
 const CACHE = 'cen-v1';
-const SHELL = ['/', '/manifest.webmanifest', '/icons/icon-192.png', '/icons/icon-512.png'];
+const SCOPE = self.registration.scope;
+const at = (path) => new URL(path, SCOPE).href;
+const SHELL_URL = at('.');
+const SHELL = [
+  SHELL_URL,
+  at('manifest.webmanifest'),
+  at('icons/icon-192.png'),
+  at('icons/icon-512.png'),
+];
 
 self.addEventListener('install', (event) => {
   event.waitUntil(
@@ -43,10 +55,10 @@ self.addEventListener('fetch', (event) => {
       fetch(request)
         .then((response) => {
           const copy = response.clone();
-          caches.open(CACHE).then((cache) => cache.put('/', copy));
+          caches.open(CACHE).then((cache) => cache.put(SHELL_URL, copy));
           return response;
         })
-        .catch(() => caches.match('/').then((cached) => cached || caches.match(request))),
+        .catch(() => caches.match(SHELL_URL).then((cached) => cached || caches.match(request))),
     );
     return;
   }

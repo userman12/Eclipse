@@ -25,7 +25,10 @@ export const metadata: Metadata = {
   description:
     'Eclissi totale di Sole del 12 agosto 2026 vista da A Coruña: dove andare, dove guardare, quanto manca e quando è sicuro togliere gli occhiali.',
   applicationName: 'Coruña Eclipse Navigator',
-  manifest: '/manifest.webmanifest',
+  // Relative on purpose: the app has a single route, so these resolve
+  // correctly both at the site root (local dev) and under a GitHub Pages
+  // project subpath (/Eclipse/) without needing basePath-aware plumbing.
+  manifest: 'manifest.webmanifest',
   appleWebApp: {
     capable: true,
     title: 'Eclipse Navigator',
@@ -34,10 +37,10 @@ export const metadata: Metadata = {
   formatDetection: { telephone: false, date: false, address: false },
   icons: {
     icon: [
-      { url: '/icons/icon-192.png', sizes: '192x192', type: 'image/png' },
-      { url: '/icons/icon-512.png', sizes: '512x512', type: 'image/png' },
+      { url: 'icons/icon-192.png', sizes: '192x192', type: 'image/png' },
+      { url: 'icons/icon-512.png', sizes: '512x512', type: 'image/png' },
     ],
-    apple: [{ url: '/icons/apple-touch-icon.png', sizes: '180x180' }],
+    apple: [{ url: 'icons/apple-touch-icon.png', sizes: '180x180' }],
   },
 };
 

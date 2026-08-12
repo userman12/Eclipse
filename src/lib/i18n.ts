@@ -16,8 +16,6 @@ export const LANG_NATIVE_NAME: Record<Lang, string> = {
 };
 
 const it = {
-  appName: 'Coruña Eclipse Navigator',
-  tagline: 'Eclissi totale di Sole · 12 agosto 2026',
   liveClock: 'Ora locale',
   langLabel: 'Lingua',
 
@@ -47,9 +45,7 @@ const it = {
   },
 
   countdown: {
-    nextLabel: 'Prossima fase',
     to: 'Mancano a',
-    totalityLeft: 'Totalità: tempo rimasto',
     glassesBackOn: 'Rimetti gli occhiali fra',
     done: 'Tutte le fasi sono concluse',
     days: 'g',
@@ -76,7 +72,6 @@ const it = {
     enable: 'Attiva la bussola',
     enableHint: 'Serve il permesso per i sensori di orientamento.',
     unavailable: 'Bussola non disponibile: la rosa è orientata con il Nord in alto.',
-    calibrate: 'Muovi il telefono a forma di 8 per calibrare.',
     yourHeading: 'Il telefono punta a',
     turnRight: 'Ruota a destra',
     turnLeft: 'Ruota a sinistra',
@@ -99,16 +94,11 @@ const it = {
     subtitle: 'Orari locali di {city} ({timezone})',
     totalityDuration: 'Durata della totalità: {n} secondi',
     maxCoverage: 'Copertura massima del Sole: {n}%',
-    now: 'adesso',
-    done: 'passata',
     next: 'prossima',
   },
 
   safety: {
     title: 'Sicurezza degli occhi',
-    required: 'Occhiali da eclissi obbligatori',
-    off: 'Occhiali rimovibili solo ora',
-    none: 'Non guardare mai il Sole a occhio nudo',
     rules: [
       'Durante le fasi parziali usa solo occhiali da eclissi omologati ISO 12312-2.',
       'Non usare occhiali da sole, filtri improvvisati, radiografie o vetri anneriti.',
@@ -119,8 +109,6 @@ const it = {
     bannerOff: 'Puoi togliere gli occhiali — solo per {n} s',
     bannerBackOn: 'Occhiali subito: il Sole è tornato',
     bannerNone: 'Mai a occhio nudo senza occhiali certificati',
-    more: 'Regole complete',
-    less: 'Chiudi',
   },
 
   spots: {
@@ -212,13 +200,11 @@ const it = {
     glassesOn: 'Occhiali indossati',
     glassesOff: 'Occhiali tolti',
     priorityLabel: 'Da non perdere',
-    beforeStart: 'La sequenza parte all’inizio della totalità, alle 20:27:35.',
-    ended: 'La totalità è finita.',
     tip: 'Consiglio: non fotografare. Con 76 secondi, un telefono ti fa perdere l’unica cosa che conta.',
     steps: {
       approach: {
-        title: 'L’ombra arriva dal mare',
-        body: 'Guarda verso Nord-Ovest, sull’Atlantico: il cono d’ombra della Luna corre verso di te sull’acqua. Dalla costa è uno spettacolo che chi è nell’entroterra non vede.',
+        title: 'L’ombra in arrivo',
+        body: 'Guarda verso Ovest: il cono d’ombra della Luna sta correndo verso di te attraverso il paesaggio a migliaia di km/h. Con un orizzonte libero puoi provare a scorgerlo pochi secondi prima che ti raggiunga.',
       },
       'shadow-bands': {
         title: 'Bande d’ombra a terra',
@@ -250,7 +236,7 @@ const it = {
       },
       planets: {
         title: 'Pianeti e stelle',
-        body: 'Venere è alto a Sud-Ovest, molto luminoso. Giove e Mercurio sono a pochi gradi dal Sole eclissato: in nessun’altra sera dell’anno riusciresti a vederli.',
+        body: 'Venere è alto a Sud-Ovest, molto luminoso: è la cosa più facile da riconoscere. Altri pianeti possono comparire vicinissimi al Sole eclissato — guarda il tab Cielo per sapere esattamente cosa aspettarti da qui.',
       },
       'corona-again': {
         title: 'Un ultimo sguardo alla corona',
@@ -271,9 +257,7 @@ const it = {
     title: 'Cosa cercare',
     subtitle:
       'Ogni fenomeno dura pochi secondi e si riconosce solo se sai già cos’è. Leggi prima, così durante non devi pensarci.',
-    difficultyLabel: 'Difficoltà',
     difficulty: { easy: 'Facile', medium: 'Media', hard: 'Difficile' },
-    directionLabel: 'Dove guardare',
     direction: {
       sun: 'Verso il Sole',
       horizon: 'Sull’orizzonte',
@@ -286,7 +270,7 @@ const it = {
     items: {
       'umbra-approach': {
         title: 'L’ombra che arriva',
-        body: 'Una parete scura che avanza sul mare da Nord-Ovest a migliaia di km/h. Ad A Coruña arriva dall’Atlantico: è il vantaggio di stare sulla costa.',
+        body: 'Una parete scura che avanza a migliaia di km/h. Da un punto panoramico o vicino al mare puoi vederla arrivare pochi secondi prima che ti raggiunga.',
       },
       'shadow-bands': {
         title: 'Bande d’ombra',
@@ -298,7 +282,7 @@ const it = {
       },
       wildlife: {
         title: 'Reazione degli animali',
-        body: 'Gabbiani che rientrano, uccelli che smettono di cantare, grilli che partono. Sulla costa di A Coruña è particolarmente evidente.',
+        body: 'Gabbiani che rientrano, uccelli che smettono di cantare, grilli che partono. Più evidente all’aperto, lontano dal rumore del traffico.',
       },
       'diamond-ring': {
         title: 'Anello di diamante',
@@ -344,7 +328,6 @@ const it = {
     behindYouHint:
       'Se avanza tempo dopo aver guardato la corona: queste sono già sopra l’orizzonte, ma ti costringono a voltarti.',
     planets: 'Pianeti',
-    stars: 'Stelle luminose',
     objects: {
       venus: { name: 'Venere', note: 'Il più facile in assoluto: alto a Sud-Ovest e molto brillante. Lo vedrai anche prima della totalità.' },
       jupiter: { name: 'Giove', note: 'Vicinissimo al Sole eclissato. Invisibile in qualsiasi altra sera di agosto.' },
@@ -391,7 +374,7 @@ const it = {
       'Non servono occhiali né strumenti: le meteore si guardano a occhio nudo, sdraiati.',
       'Guarda in alto, non verso il radiante: le scie più lunghe compaiono lontano da Perseo.',
       'Servono 20 minuti al buio completo perché l’occhio si adatti. Il telefono azzera l’adattamento ogni volta che lo accendi.',
-      'Gli stessi punti costieri dell’eclissi vanno bene, purché lontani dalle luci della città.',
+      'Lo stesso punto scelto per l’eclissi va bene anche per le Perseidi, purché lontano dalle luci della città.',
     ],
   },
 
@@ -454,8 +437,6 @@ const it = {
 type Dict = typeof it;
 
 const es: Dict = {
-  appName: 'Coruña Eclipse Navigator',
-  tagline: 'Eclipse total de Sol · 12 de agosto de 2026',
   liveClock: 'Hora local',
   langLabel: 'Idioma',
 
@@ -481,9 +462,7 @@ const es: Dict = {
   },
 
   countdown: {
-    nextLabel: 'Próxima fase',
     to: 'Faltan para',
-    totalityLeft: 'Totalidad: tiempo restante',
     glassesBackOn: 'Ponte las gafas en',
     done: 'Todas las fases han concluido',
     days: 'd',
@@ -510,7 +489,6 @@ const es: Dict = {
     enable: 'Activar la brújula',
     enableHint: 'Se necesita permiso para los sensores de orientación.',
     unavailable: 'Brújula no disponible: la rosa está orientada con el Norte arriba.',
-    calibrate: 'Mueve el teléfono en forma de 8 para calibrar.',
     yourHeading: 'El teléfono apunta al',
     turnRight: 'Gira a la derecha',
     turnLeft: 'Gira a la izquierda',
@@ -533,16 +511,11 @@ const es: Dict = {
     subtitle: 'Horas locales de {city} ({timezone})',
     totalityDuration: 'Duración de la totalidad: {n} segundos',
     maxCoverage: 'Cobertura máxima del Sol: {n}%',
-    now: 'ahora',
-    done: 'pasada',
     next: 'siguiente',
   },
 
   safety: {
     title: 'Seguridad ocular',
-    required: 'Gafas de eclipse obligatorias',
-    off: 'Gafas retirables solo ahora',
-    none: 'Nunca mires al Sol sin protección',
     rules: [
       'Durante las fases parciales usa solo gafas de eclipse homologadas ISO 12312-2.',
       'No uses gafas de sol, filtros improvisados, radiografías ni cristales ahumados.',
@@ -553,8 +526,6 @@ const es: Dict = {
     bannerOff: 'Puedes quitarte las gafas — solo {n} s',
     bannerBackOn: 'Gafas ya: el Sol ha vuelto',
     bannerNone: 'Nunca a simple vista sin gafas certificadas',
-    more: 'Reglas completas',
-    less: 'Cerrar',
   },
 
   spots: {
@@ -644,13 +615,11 @@ const es: Dict = {
     glassesOn: 'Gafas puestas',
     glassesOff: 'Gafas quitadas',
     priorityLabel: 'Imprescindible',
-    beforeStart: 'La secuencia empieza al inicio de la totalidad, a las 20:27:35.',
-    ended: 'La totalidad ha terminado.',
     tip: 'Consejo: no hagas fotos. Con 76 segundos, el móvil te hace perder lo único que importa.',
     steps: {
       approach: {
-        title: 'La sombra llega desde el mar',
-        body: 'Mira hacia el Noroeste, sobre el Atlántico: el cono de sombra de la Luna corre hacia ti sobre el agua. Desde la costa es un espectáculo que no se ve tierra adentro.',
+        title: 'La sombra que se acerca',
+        body: 'Mira hacia el Oeste: el cono de sombra de la Luna viene corriendo hacia ti a través del paisaje a miles de km/h. Con un horizonte despejado puedes intentar verlo unos segundos antes de que te alcance.',
       },
       'shadow-bands': {
         title: 'Bandas de sombra en el suelo',
@@ -682,7 +651,7 @@ const es: Dict = {
       },
       planets: {
         title: 'Planetas y estrellas',
-        body: 'Venus está alto al Suroeste, muy brillante. Júpiter y Mercurio están a pocos grados del Sol eclipsado: ninguna otra noche del año podrías verlos.',
+        body: 'Venus está alto al Suroeste, muy brillante: es lo más fácil de reconocer. Otros planetas pueden aparecer muy cerca del Sol eclipsado — consulta la pestaña Cielo para saber exactamente qué esperar desde aquí.',
       },
       'corona-again': {
         title: 'Una última mirada a la corona',
@@ -703,9 +672,7 @@ const es: Dict = {
     title: 'Qué buscar',
     subtitle:
       'Cada fenómeno dura pocos segundos y solo se reconoce si ya sabes qué es. Léelo antes, así durante no tendrás que pensarlo.',
-    difficultyLabel: 'Dificultad',
     difficulty: { easy: 'Fácil', medium: 'Media', hard: 'Difícil' },
-    directionLabel: 'Dónde mirar',
     direction: {
       sun: 'Hacia el Sol',
       horizon: 'En el horizonte',
@@ -718,7 +685,7 @@ const es: Dict = {
     items: {
       'umbra-approach': {
         title: 'La sombra que llega',
-        body: 'Un muro oscuro que avanza sobre el mar desde el Noroeste a miles de km/h. A A Coruña llega desde el Atlántico: esa es la ventaja de estar en la costa.',
+        body: 'Un muro oscuro que avanza a miles de km/h. Desde un mirador o cerca del mar puedes verla llegar unos segundos antes de que te alcance.',
       },
       'shadow-bands': {
         title: 'Bandas de sombra',
@@ -730,7 +697,7 @@ const es: Dict = {
       },
       wildlife: {
         title: 'Reacción de los animales',
-        body: 'Gaviotas que se retiran, pájaros que dejan de cantar, grillos que arrancan. En la costa de A Coruña se nota especialmente.',
+        body: 'Gaviotas que se retiran, pájaros que dejan de cantar, grillos que arrancan. Más evidente al aire libre, lejos del ruido del tráfico.',
       },
       'diamond-ring': {
         title: 'Anillo de diamante',
@@ -776,7 +743,6 @@ const es: Dict = {
     behindYouHint:
       'Si te sobra tiempo tras mirar la corona: ya están sobre el horizonte, pero te obligan a darte la vuelta.',
     planets: 'Planetas',
-    stars: 'Estrellas brillantes',
     objects: {
       venus: { name: 'Venus', note: 'El más fácil con diferencia: alto al Suroeste y muy brillante. Lo verás incluso antes de la totalidad.' },
       jupiter: { name: 'Júpiter', note: 'Muy cerca del Sol eclipsado. Invisible cualquier otra noche de agosto.' },
@@ -823,7 +789,7 @@ const es: Dict = {
       'No hacen falta gafas ni instrumentos: los meteoros se miran a simple vista, tumbado.',
       'Mira hacia arriba, no hacia el radiante: las estelas más largas aparecen lejos de Perseo.',
       'Hacen falta 20 minutos a oscuras para que el ojo se adapte. El móvil borra esa adaptación cada vez que lo enciendes.',
-      'Los mismos puntos costeros del eclipse sirven, siempre que estén lejos de las luces de la ciudad.',
+      'El mismo punto elegido para el eclipse también sirve para las Perseidas, siempre que esté lejos de las luces de la ciudad.',
     ],
   },
 
@@ -884,8 +850,6 @@ const es: Dict = {
 };
 
 const en: Dict = {
-  appName: 'Coruña Eclipse Navigator',
-  tagline: 'Total solar eclipse · 12 August 2026',
   liveClock: 'Local time',
   langLabel: 'Language',
 
@@ -909,9 +873,7 @@ const en: Dict = {
   },
 
   countdown: {
-    nextLabel: 'Next phase',
     to: 'Time to',
-    totalityLeft: 'Totality: time left',
     glassesBackOn: 'Glasses back on in',
     done: 'All phases are over',
     days: 'd',
@@ -938,7 +900,6 @@ const en: Dict = {
     enable: 'Enable the compass',
     enableHint: 'Needs permission to use the orientation sensors.',
     unavailable: 'Compass unavailable: the rose is shown with North up.',
-    calibrate: 'Move your phone in a figure-8 to calibrate.',
     yourHeading: 'Your phone is pointing',
     turnRight: 'Turn right',
     turnLeft: 'Turn left',
@@ -961,16 +922,11 @@ const en: Dict = {
     subtitle: 'Local times for {city} ({timezone})',
     totalityDuration: 'Totality lasts: {n} seconds',
     maxCoverage: 'Maximum Sun coverage: {n}%',
-    now: 'now',
-    done: 'past',
     next: 'next',
   },
 
   safety: {
     title: 'Eye safety',
-    required: 'Eclipse glasses required',
-    off: 'Glasses removable only now',
-    none: 'Never look at the Sun with the naked eye',
     rules: [
       'During the partial phases use only ISO 12312-2 certified eclipse glasses.',
       'Do not use sunglasses, improvised filters, X-ray film or smoked glass.',
@@ -981,8 +937,6 @@ const en: Dict = {
     bannerOff: 'You can remove your glasses — only for {n} s',
     bannerBackOn: 'Glasses now: the Sun is back',
     bannerNone: 'Never with the naked eye, without certified glasses',
-    more: 'Full rules',
-    less: 'Close',
   },
 
   spots: {
@@ -1072,13 +1026,11 @@ const en: Dict = {
     glassesOn: 'Glasses on',
     glassesOff: 'Glasses off',
     priorityLabel: 'Don’t miss this',
-    beforeStart: 'The sequence starts at the beginning of totality, at 20:27:35.',
-    ended: 'Totality is over.',
     tip: 'Tip: don’t take photos. With 76 seconds, a phone will cost you the one thing that matters.',
     steps: {
       approach: {
-        title: 'The shadow arrives from the sea',
-        body: 'Look Northwest, over the Atlantic: the Moon’s shadow cone races toward you across the water. From the coast it’s a sight inland viewers never get.',
+        title: 'The shadow closing in',
+        body: 'Look West: the Moon’s shadow cone is racing toward you across the landscape at thousands of km/h. With an open horizon, try to catch it a few seconds before it reaches you.',
       },
       'shadow-bands': {
         title: 'Shadow bands on the ground',
@@ -1110,7 +1062,7 @@ const en: Dict = {
       },
       planets: {
         title: 'Planets and stars',
-        body: 'Venus is high in the Southwest, very bright. Jupiter and Mercury sit a few degrees from the eclipsed Sun: no other evening of the year lets you see them.',
+        body: 'Venus is high in the Southwest, very bright — the easiest one to spot. Other planets can appear very close to the eclipsed Sun: check the Sky tab for exactly what to expect from here.',
       },
       'corona-again': {
         title: 'One last look at the corona',
@@ -1131,9 +1083,7 @@ const en: Dict = {
     title: 'What to look for',
     subtitle:
       'Every phenomenon lasts a few seconds and is only recognisable if you already know what it is. Read this beforehand, so you don’t have to think during it.',
-    difficultyLabel: 'Difficulty',
     difficulty: { easy: 'Easy', medium: 'Medium', hard: 'Hard' },
-    directionLabel: 'Where to look',
     direction: {
       sun: 'Toward the Sun',
       horizon: 'On the horizon',
@@ -1146,7 +1096,7 @@ const en: Dict = {
     items: {
       'umbra-approach': {
         title: 'The approaching shadow',
-        body: 'A dark wall advancing over the sea from the Northwest at thousands of km/h. In A Coruña it arrives from the Atlantic: the advantage of being on the coast.',
+        body: 'A dark wall advancing at thousands of km/h. From a viewpoint or near the sea, you can watch it arrive a few seconds before it reaches you.',
       },
       'shadow-bands': {
         title: 'Shadow bands',
@@ -1158,7 +1108,7 @@ const en: Dict = {
       },
       wildlife: {
         title: 'Animal reactions',
-        body: 'Gulls heading back, birds falling silent, crickets starting up. Especially noticeable on the A Coruña coast.',
+        body: 'Gulls heading back, birds falling silent, crickets starting up. Most noticeable outdoors, away from traffic noise.',
       },
       'diamond-ring': {
         title: 'Diamond ring',
@@ -1204,7 +1154,6 @@ const en: Dict = {
     behindYouHint:
       'If you have time left after looking at the corona: these are already above the horizon, but you’ll have to turn around.',
     planets: 'Planets',
-    stars: 'Bright stars',
     objects: {
       venus: { name: 'Venus', note: 'By far the easiest: high in the Southwest and very bright. You’ll see it even before totality.' },
       jupiter: { name: 'Jupiter', note: 'Right next to the eclipsed Sun. Invisible on any other August evening.' },
@@ -1250,7 +1199,7 @@ const en: Dict = {
       'No glasses or equipment needed: meteors are watched with the naked eye, lying down.',
       'Look up, not at the radiant: the longest trails appear far from Perseus.',
       'It takes 20 minutes in full darkness for your eyes to adapt. Your phone resets that adaptation every time you switch it on.',
-      'The same coastal spots from the eclipse work fine, as long as they’re away from city lights.',
+      'The same spot you picked for the eclipse works fine for the Perseids too, as long as it’s away from city lights.',
     ],
   },
 

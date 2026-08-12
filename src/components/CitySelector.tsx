@@ -76,9 +76,11 @@ export default function CitySelector() {
   return (
     <Drawer>
       <DrawerTrigger asChild>
+        {/* h-11 (44px): this is a primary navigation control, so it gets a
+            real touch target, not just enough padding to look right. */}
         <button
           type="button"
-          className="glass-inset flex items-center gap-1.5 rounded-full px-3 py-1.5 text-left"
+          className="glass-inset flex h-11 items-center gap-1.5 rounded-full px-3.5 text-left"
         >
           <MapPin size={13} className="text-corona shrink-0" aria-hidden />
           <span className="max-w-[6rem] truncate text-sm font-semibold">{label.name}</span>

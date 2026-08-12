@@ -3,7 +3,7 @@
  *
  * Lives outside the components because two of them need exactly the same
  * answer at the same instant: the live box under the countdown and the full
- * list in the Totalità tab. Any disagreement between the two would be a
+ * list in the Totality tab. Any disagreement between the two would be a
  * safety bug, not a cosmetic one.
  */
 

@@ -1,273 +1,297 @@
 # Coruña Eclipse Navigator
 
-Web app / PWA mobile-first per l'**eclissi di Sole del 12 agosto 2026**, con dati calcolati e
-verificati per **16 città** dove è davvero visibile — dalla totalità di A Coruña e Reykjavík alla
-parzialità di Londra, Parigi o Roma. Disponibile in **italiano, spagnolo e inglese**.
+A mobile-first web app / PWA for the **12 August 2026 solar eclipse**, with data computed and
+cross-checked for **16 cities** where it's actually visible — from totality in A Coruña and
+Reykjavík to the deep partial phases in London, Paris or Rome. Available in **Italian, Spanish
+and English**.
 
 🔗 **[userman12.github.io/Eclipse](https://userman12.github.io/Eclipse/)**
 
-L'app esiste per un motivo preciso: la totalità dura **76 secondi**, con il Sole a **12° sull'orizzonte**
-(ad A Coruña — altrove cambia). Hai un solo tentativo, e l'errore più comune non è sbagliare direzione
-— è arrivare alla fine senza aver guardato le cose giuste. Quindi risponde a quattro domande, in
-quest'ordine:
+The app exists for one precise reason: totality lasts **76 seconds**, with the Sun at **12° above
+the horizon** (in A Coruña — it varies elsewhere). You get one attempt, and the most common
+mistake isn't looking the wrong way — it's reaching the end without having looked at the right
+things. So it answers four questions, in this order:
 
-1. **Dove devo guardare adesso?** — bussola, altezza del Sole, countdown
-2. **Cosa devo fare in quei 76 secondi?** — una scaletta secondo per secondo che si illumina da sola *(solo dove c'è totalità)*
-3. **Cosa vedrò?** — pianeti e stelle che compaiono solo durante la totalità, fenomeni da riconoscere
-4. **E dopo?** — la stessa notte è il picco delle Perseidi, senza Luna, ovunque
+1. **Where do I look right now?** — compass, Sun altitude, countdown
+2. **What do I do in those 76 seconds?** — a second-by-second script that highlights itself *(total-eclipse cities only)*
+3. **What will I actually see?** — planets and stars that only appear during totality, phenomena worth recognising
+4. **What about after?** — that same night is the Perseid peak, with no Moon, everywhere on the list
 
-## Avvio
+## Getting started
 
 ```bash
 npm install
 npm run dev          # http://localhost:3000
 ```
 
-Altri comandi:
+Other commands:
 
 ```bash
-npm run build        # build di produzione
-npm run start        # server di produzione
-npm run typecheck    # tsc --noEmit
-npm run icons        # rigenera le icone PWA (PNG, senza dipendenze)
+npm run build                 # production build
+npm run start                 # production server
+npm run typecheck              # tsc --noEmit
+npm run icons                  # regenerate PWA icons (real PNGs, no dependencies)
+npm run verify:cities          # cross-check all 16 cities against the app's own solar formula
+npm run verify:sky             # recompute planet/star positions for A Coruña at maximum
+npm run verify:dial            # render the Sun/Moon dial to PNG for a visual check
+npm run verify:countdown-fit   # re-derive the countdown's container-query font-size formulas
 ```
 
-## Come provare gli stati temporali
+## Trying out the temporal states
 
-Ogni città calcola il proprio stato dalla propria ora locale, non da quella del dispositivo. Per
-non aspettare l'eclissi, aggiungi il parametro `?t=HH:MM:SS` (ora locale di Europe/Madrid, sempre
-la stessa qualunque sia la città selezionata nella UI): l'orologio parte da lì e continua a scorrere
-in tempo reale. Gli orari sotto sono tarati sulla città di default (A Coruña, in totalità); scegli
-un'altra città dal selettore dopo il caricamento per vedere il suo stato in quello stesso istante.
+Every city computes its own state from its own local time, not the device's. To avoid waiting for
+the actual eclipse, add `?t=HH:MM:SS` to the URL — interpreted as Europe/Madrid wall-clock time,
+always the same regardless of which city is selected in the UI, so the same URL always simulates
+the same real-world instant. The clock starts there and keeps running in real time. The table below
+is tuned to the default city (A Coruña, in totality); pick a different city from the selector after
+load to see its own state at that same instant.
 
-| URL | Stato (A Coruña) |
+| URL | State (A Coruña) |
 | --- | --- |
-| `/?t=18:00:00` | Prima dell'eclissi |
-| `/?t=19:45:00` | Fase parziale — occhiali obbligatori |
-| `/?t=20:27:40` | **Totalità** — occhiali rimovibili, countdown critico |
-| `/?t=20:29:00` | Subito dopo la totalità — rimetti gli occhiali |
-| `/?t=21:30:00` | Eclissi terminata |
+| `/?t=18:00:00` | Before the eclipse |
+| `/?t=19:45:00` | Partial phase — glasses required |
+| `/?t=20:27:40` | **Totality** — glasses removable, critical countdown |
+| `/?t=20:29:00` | Right after totality — glasses back on |
+| `/?t=21:30:00` | Eclipse over |
 
-## 16 città, non il mondo intero
+## 16 cities, not the whole world
 
-L'eclissi del 12 agosto 2026 è visibile solo da una fascia stretta: totalità in Groenlandia,
-Islanda e Spagna nord-orientale; parziale in gran parte di Europa, Nord Africa e Artico. Tokyo,
-New York, Sydney o Dubai non vedono nulla quel giorno. Per questo il selettore città (in alto,
-accanto al toggle lingua) non è un elenco generico "top città del mondo": sono **16 città curate**
-dove succede davvero qualcosa, ciascuna con orari e percentuale di copertura calcolati per le sue
-coordinate reali — non un'interpolazione approssimativa.
+The 12 August 2026 eclipse is visible only along a narrow band: totality across Greenland, Iceland
+and north-eastern Spain; partial visibility across much of Europe, North Africa and the Arctic.
+Tokyo, New York, Sydney or Dubai see nothing at all that day. That's why the city selector (top of
+the screen, next to the language picker) isn't a generic "top world cities" list — it's **16
+curated cities** where something actually happens, each with contact times and coverage percentage
+computed for its own real coordinates, not an approximation interpolated between two known points.
 
-I dati (orari di contatto, magnitudine, altezza/azimut del Sole) vengono da fonti pubbliche di
-predizione eclissi, **incrociati con la formula solare già verificata dell'app**: per ognuna delle
-16 città, la posizione del Sole calcolata internamente combacia con quella dichiarata dalla fonte
-entro mezzo grado — vedi `npm run verify:cities`. L'altezza del Sole al 4° contatto determina anche,
-in modo empirico, quali eclissi finiscono davvero al tramonto (11 delle 16) invece di completarsi
-con il Sole ancora alto.
+The underlying data (contact times, magnitude, Sun altitude/azimuth) comes from published eclipse
+predictions, **cross-checked against the app's own verified solar formula**: for every one of the
+16 cities, the internally computed Sun position at its reported maximum matches the published value
+to within half a degree — see `npm run verify:cities`. The Sun's altitude at each city's final
+contact is also used to determine, empirically, which eclipses actually end at sunset (11 of the
+16) rather than completing with the Sun still up.
 
-**Sicurezza per le città in parziale.** 6 città sono in totalità (A Coruña, Reykjavík, Valencia,
-Saragozza, Bilbao, Palma di Maiorca), 10 restano parziali anche al massimo, alcune sopra il 90%
-(Madrid 99,9%, Lisbona 94,9%, Dublino 94,6%). In una città parziale il Sole **non è mai** completamente
-coperto, quindi togliere gli occhiali non è mai sicuro. Questo non è garantito solo dai testi: la
-macchina a stati in `src/lib/time.ts` ha due percorsi strutturalmente diversi per `type: 'total'` e
-`type: 'partial'`, e per le città parziali lo stato `'totality'` / `safety: 'glasses-off'` non è
-semplicemente improbabile — è un ramo di codice che non esiste. I tab "Totalità" e "Cielo" mostrano
-un avviso onesto invece di contenuti inventati quando non si applicano.
+**Safety for partial-eclipse cities.** 6 cities reach totality (A Coruña, Reykjavík, Valencia,
+Zaragoza, Bilbao, Palma de Mallorca); the other 10 stay partial even at maximum, several above 90%
+(Madrid 99.9%, Lisbon 94.9%, Dublin 94.6%). In a partial-eclipse city the Sun is **never** fully
+covered, so removing your glasses is never safe — and that isn't guaranteed by copy alone. The
+state machine in `src/lib/time.ts` has two structurally different code paths for `type: 'total'`
+and `type: 'partial'`: for a partial city, the `'totality'` stage and `safety: 'glasses-off'` level
+aren't merely unlikely to occur — they're a code branch that doesn't exist. The Totality and Sky
+tabs show an honest explainer instead of fabricated content wherever they don't apply.
 
-**Nessun punto di osservazione inventato.** A Coruña ha 5 spot verificati (sotto). Le altre 15 città
-non li hanno: piuttosto che inventare mirador o spiagge senza averli mai controllati, l'app mostra la
-sola direzione da cercare più un link di ricerca Maps genuino (non un pin finto).
+**No invented observation spots.** A Coruña has 5 checked spots (below). The other 15 cities don't
+get fabricated named viewpoints — instead the app shows the computed direction to look plus a
+genuine Maps search link, not a made-up pin.
 
 ## Stack
 
-Next.js 15 (App Router) · TypeScript · **Tailwind CSS v4** · **shadcn/ui** (su Radix) ·
-Framer Motion · Lucide · SVG inline · PWA con service worker.
+Next.js 15 (App Router) · TypeScript · **Tailwind CSS v4** · **shadcn/ui** (on Radix) ·
+Framer Motion · Lucide · inline SVG · CSS container queries · PWA with a service worker.
 
-## Struttura
+## Structure
 
 ```
 src/
   app/
-    layout.tsx                 metadata, font, provider lingua, PWA, Toaster
-    page.tsx                   composizione della home + toast al cambio fase
-    globals.css                design system: palette, token shadcn, liquid glass
-    ServiceWorkerRegistrar.tsx registrazione del service worker (solo in produzione)
+    layout.tsx                 metadata, fonts, providers, PWA, Toaster
+    page.tsx                   home composition + toast on phase change
+    globals.css                design system: palette, shadcn tokens, liquid glass
+    ServiceWorkerRegistrar.tsx registers the service worker (production only)
   components/
-    ui/                        primitive shadcn (button, card, badge, alert,
+    ui/                        shadcn primitives (button, card, badge, alert,
                                progress, drawer, accordion, separator, skeleton,
                                scroll-area, tabs, toggle-group, sonner)
-    AuroraBackground.tsx       il fondale animato che il vetro rifrange
-    GlassCard.tsx              Card shadcn resa in liquid glass + varianti di reveal
-    CitySelector.tsx           selettore delle 16 città, raggruppate totale/parziale
-    EclipseHero.tsx            città, orologio, countdown, stato contestuale
-    Countdown.tsx              countdown a cifre rotanti
-    ContextualStatus.tsx       il messaggio che cambia con l'orario (e con total/parziale)
-    Compass.tsx                rosa dei venti SVG + bussola del dispositivo
-    HorizonView.tsx            orizzonte marino, Sole basso, altezza in gradi
-    EclipseTimeline.tsx        le fasi con orari locali della città selezionata
-    SafetyNotice.tsx           pill di sicurezza persistente + Drawer con le regole
-    EclipseDial.tsx            disco Sole/Luna dal vivo accanto al countdown
-    LiveGuide.tsx              riquadro live sotto il countdown (solo città in totalità)
-    TotalityScript.tsx         i 76 secondi, passo per passo (solo città in totalità)
-    PartialCityNotice.tsx      avviso onesto nei tab Totalità/Cielo per le città parziali
-    PhenomenaGuide.tsx         glossario dei fenomeni: cosa sono e come riconoscerli
-    SkyDuringTotality.tsx      mappa del cielo a Ovest + pianeti e stelle, calcolati dal vivo
-    PerseidNight.tsx           crepuscolo, Perseidi al picco, altezza del radiante — per città
-    ObservationSpots.tsx       spot curati (solo A Coruña) o fallback generico altrove
-    ObservationSpotCard.tsx    card con specular highlight e CTA "Apri indicazioni"
-    GenericSpotGuidance.tsx    fallback onesto: direzione + ricerca Maps, nessun pin inventato
-    WeatherCard.tsx            meteo e nuvolosità (dati mock, variati per città)
-    LanguageToggle.tsx         IT / ES / EN
+    AuroraBackground.tsx       the animated backdrop the glass refracts
+    GlassCard.tsx              shadcn Card rendered as liquid glass + shared reveal variants
+    CitySelector.tsx           the 16-city picker, grouped total/partial, drawer-based
+    LanguagePicker.tsx         IT / ES / EN picker, same drawer pattern as CitySelector
+    EclipseHero.tsx            city, clock, countdown, contextual status
+    Countdown.tsx              container-query-sized rolling-digit countdown
+    ContextualStatus.tsx       the message that changes with time (and total/partial)
+    Compass.tsx                SVG compass rose + device orientation sensor
+    HorizonView.tsx            sea horizon, low Sun, altitude in degrees
+    EclipseTimeline.tsx        the phases with the selected city's own local times
+    SafetyNotice.tsx           persistent safety pill + Drawer with the full rules
+    EclipseDial.tsx            live Sun/Moon disk next to the countdown
+    LiveGuide.tsx              live box under the countdown (total-eclipse cities only)
+    TotalityScript.tsx         the 76 seconds, step by step (total-eclipse cities only)
+    PartialCityNotice.tsx      honest explainer in the Totality/Sky tabs for partial cities
+    PhenomenaGuide.tsx         glossary of phenomena: what they are, how to recognise them
+    SkyDuringTotality.tsx      western-sky map + live-computed planets and stars
+    PerseidNight.tsx           twilight ladder, Perseid peak, radiant altitude — per city
+    ObservationSpots.tsx       curated spots (A Coruña only) or the generic fallback elsewhere
+    ObservationSpotCard.tsx    card with a pointer-tracking specular highlight + directions CTA
+    GenericSpotGuidance.tsx    honest fallback: direction + Maps search, no invented pin
+    WeatherCard.tsx            weather and cloud cover (mock data, varied per city)
   data/
-    cities.ts                  le 16 città: coordinate, fasi, magnitudine, tipo total/parziale
-    eventData.ts               contenuto condiviso: spot A Coruña, script 76s, fenomeni, Perseidi
+    cities.ts                  the 16 cities: coordinates, phases, magnitude, total/partial type
+    eventData.ts               shared content: A Coruña spots, 76s script, phenomena, Perseids
   lib/
-    CityProvider.tsx           contesto React per la città selezionata (persistita)
-    time.ts                    fasi → istanti UTC, stato temporale per città, countdown
-    sun.ts                     posizione solare (NOAA low-precision)
-    skyObjects.ts               pianeti e stelle calcolati dal vivo per qualunque città/istante
-    night.ts                   crepuscolo e altezza del radiante Perseidi, calcolati per città
-    weather.ts                 seam per una futura API meteo, mock variato per città
-    eclipseGeometry.ts         transito della Luna e frazione di Sole coperta, per città
-    totality.ts                logica condivisa della scaletta dei 76 secondi
-    i18n.ts                    dizionari IT / ES / EN
-    utils.ts                   cn() di shadcn
-    useCompassHeading.ts       sensori di orientamento (con permesso iOS)
-    useNow.ts                  orologio + simulazione via ?t= (sempre su Europe/Madrid)
+    CityProvider.tsx           React context for the selected city (persisted)
+    time.ts                    phases → UTC instants, per-city temporal state, countdown
+    sun.ts                     solar position (NOAA low-precision)
+    skyObjects.ts              planets and stars computed live for any city/instant
+    night.ts                   twilight ladder and Perseid radiant altitude, computed per city
+    weather.ts                 seam for a future weather API, mock varied per city
+    eclipseGeometry.ts         Moon transit and Sun-coverage fraction, per city
+    totality.ts                shared logic for the 76-second script
+    i18n.ts                    IT / ES / EN dictionaries
+    utils.ts                   shadcn's cn()
+    useCompassHeading.ts       orientation sensors (with iOS permission prompt)
+    useNow.ts                  live clock + ?t= simulation (always against Europe/Madrid)
 scripts/
-  generate-icons.mjs           icone PWA come PNG reali, senza dipendenze
-  verify-sky.mjs               ricalcola le posizioni di pianeti e stelle
-  verify-dial.mjs              rende il quadrante in PNG per un controllo visivo
-  verify-cities.mjs            incrocia i dati delle 16 città con la formula solare interna
+  generate-icons.mjs           PWA icons as real PNGs, no dependencies
+  verify-sky.mjs               recomputes planet/star positions for A Coruña
+  verify-dial.mjs              renders the Sun/Moon dial to PNG for a visual check
+  verify-cities.mjs            cross-checks all 16 cities against the app's own solar formula
+  verify-countdown-fit.mjs     re-derives the countdown's container-query font-size formulas
 public/
   manifest.webmanifest, sw.js, icons/
 ```
 
-## Il quadrante Sole/Luna
+## The Sun/Moon dial
 
-Accanto al countdown c'è un disco che mostra dal vivo quanto Sole è coperto, con la percentuale
-sotto. Non è un'illustrazione: ogni posizione viene dall'orologio tramite `src/lib/eclipseGeometry.ts`,
-che modella la Luna come un disco di raggio 1,04 che attraversa il Sole lungo una traiettoria retta.
+Next to the countdown sits a disk that shows, live, how much of the Sun is covered, with the
+percentage underneath. It isn't an illustration: every position comes from the clock through
+`src/lib/eclipseGeometry.ts`, which models the Moon as a disk of radius 1.04 crossing the Sun
+along a straight track.
 
-I quattro contatti cadono **esatti** (0% → 100% → 100% → 0% ai secondi pubblicati), perché la
-posizione è interpolata fra i cinque istanti noti invece di usare una velocità costante: l'eclissi
-reale è asimmetrica, 56 minuti di parzialità prima del massimo e 54 dopo. Il Sole è disegnato con
-una maschera SVG, così la parte coperta diventa davvero trasparente e lascia vedere il vetro dietro.
+The four contacts land **exactly** (0% → 100% → 100% → 0% at their published seconds), because
+position is interpolated between the five known instants instead of assuming constant velocity —
+the real eclipse is asymmetric, 57 minutes of partial phase before maximum and 54 after. The Sun
+is drawn through an SVG mask, so the covered part becomes genuinely transparent and lets the glass
+behind it show through.
 
-`npm run verify:dial` produce una striscia PNG con otto fasi, per controllare a occhio una grafica
-che altrimenti non si potrebbe verificare. La cosa da guardare: il morso parte da un lato, passa per
-la corona, e si riapre **dal lato opposto**. La Luna attraversa, non torna indietro.
+`npm run verify:dial` renders an eight-phase PNG strip, so a graphic that otherwise couldn't be
+checked can be checked by eye. What to look for: the bite starts on one side, passes through the
+corona, and reopens on the **opposite** side. The Moon crosses through — it doesn't back out the
+way it came.
 
-La stessa geometria alimenta l'orizzonte marino nel tab *Ora*, dove prima la Luna rientrava dal lato
-da cui era arrivata. La direzione di transito è schematica; tempi e copertura sono esatti.
+The same geometry drives the sea-horizon view in the *Now* tab, where the Moon used to retreat
+back the way it arrived. The transit direction is illustrative; timing and coverage are exact.
 
-## Il riquadro live
+## The live guide
 
-Durante i 76 secondi non si naviga: non c'è tempo per scorrere, cambiare tab o leggere una lista e
-decidere. Per questo, da tre minuti prima della totalità, sotto il countdown compare da solo un
-riquadro con **occhiali sì/no** a tutta larghezza (giallo = indossati, bianco = si possono togliere),
-l'istruzione corrente, una barra di avanzamento del passo e un'anteprima del prossimo. Tutto senza
-un tap.
+There's no time to navigate during the 76 seconds — no scrolling, switching tabs, or reading a
+list and deciding. So from three minutes before totality, a box appears on its own under the
+countdown: a full-width **glasses on/off** indicator (yellow = on, white = removable), the current
+instruction, a progress bar for that step, and a preview of what's next. All without a single tap.
 
-Il riquadro e la scaletta completa nel tab *Totalità* condividono `src/lib/totality.ts`: se
-divergessero sarebbe un bug di sicurezza, non estetico. Le finestre dei passi si sovrappongono
-di proposito, quindi il passo corrente è scelto **per priorità** e, a parità, per partenza più
-recente — altrimenti a −5s "grani di Baily" coprirebbe "anello di diamante: tieni gli occhiali".
+The live box and the full script in the *Totality* tab share `src/lib/totality.ts`: if they ever
+disagreed, that would be a safety bug, not a cosmetic one. Step windows overlap on purpose, so the
+current step is chosen by **priority**, and among ties by the most recent start — otherwise at −5s
+"Baily's beads" would cover "diamond ring: keep your glasses on".
 
-Invarianti verificate lungo tutta la finestra, secondo per secondo: occhiali indossati fino a 0s,
-tolti esattamente all'inizio della totalità, rimessi a **+62s** (14 secondi di margine prima che il
-Sole riappaia a +76s), nessun istante scoperto.
+Invariants verified across the whole window, second by second: glasses on until 0s, off exactly at
+the start of totality, back on at **+62s** (a 14-second margin before the Sun reappears at +76s),
+no uncovered instant.
 
-## Il cielo durante la totalità
+## The sky during totality
 
-Tutte le posizioni in `eventData.ts` sono **calcolate**, non copiate: elementi planetari approssimati
-JPL (Standish) per i pianeti, coordinate J2000 per le stelle, formule di Meeus per le magnitudini.
-`npm run verify:sky` le rigenera, così i numeri si controllano invece di crederci.
+Every position in `src/lib/skyObjects.ts` is **computed**, not copied: approximate JPL planetary elements
+(Standish) for the planets, J2000 coordinates for the stars, Meeus' formulae for magnitude. It's
+computed live for whichever total-eclipse city is selected — `npm run verify:sky` recomputes the
+reference values for A Coruña so the numbers can be checked instead of trusted.
 
-Cosa emerge, per A Coruña al massimo (20:28:13):
+What comes out of it, for A Coruña at maximum (20:28:13):
 
-| Oggetto | Magnitudine | Altezza | Distanza dal Sole |
+| Object | Magnitude | Altitude | Distance from the Sun |
 |---|---|---|---|
-| Venere | −2,8 | 28° | 46° |
-| Giove | −1,8 | 7° | **10,5°** |
-| Mercurio | −1,0 | 5° | **14,9°** |
-| Regolo | +1,4 | 17° | **10,1°** |
-| Arturo | −0,05 | 62° | 68° |
+| Venus | −2.8 | 28° | 46° |
+| Jupiter | −1.8 | 7° | **10.5°** |
+| Mercury | −1.0 | 5° | **14.9°** |
+| Regulus | +1.4 | 17° | **10.1°** |
+| Arcturus | −0.05 | 62° | 68° |
 
-Giove, Mercurio e Regolo sono a pochi gradi dal Sole: in qualsiasi altra sera di agosto sono
-annegati nel bagliore e invisibili. La totalità è l'unica finestra dell'anno per vederli, ed è per
-questo che l'app li segnala con un badge dedicato.
+Jupiter, Mercury and Regulus sit only a few degrees from the Sun: on any other August evening
+they're drowned in glare and invisible. Totality is the only window all year to see them, which is
+why the app flags them with a dedicated badge — and, since not every total-eclipse city has them
+above the horizon (Mercury dips below it from Valencia, Zaragoza and Palma; Jupiter from Valencia
+and Palma), the sky map filters to what's actually visible from the selected city rather than
+repeating this table everywhere.
 
-## La notte, non solo l'eclissi
+## The night, not just the eclipse
 
-L'eclissi finisce alle 21:21:54, **19 minuti prima del tramonto** (21:41). Ma un'eclissi solare
-avviene per definizione con la Luna nuova — e il 12 agosto è il picco delle **Perseidi**. Significa
-che la notte migliore dell'anno per le meteore capita senza un filo di luce lunare, la stessa sera
-dell'eclissi. Il buio astronomico arriva alle 23:32 e il radiante, circumpolare da questa latitudine,
-sale da 13° a 56° entro le 05:00.
+In A Coruña the eclipse ends at 21:21:54, **19 minutes before sunset** (21:41). But a solar eclipse
+happens, by definition, at new Moon — and 12 August is the **Perseid** peak. That means the best
+meteor night of the year happens with not a sliver of moonlight, the same evening as the eclipse,
+at every city on the list. Twilight timing and radiant altitude are computed live per city in
+`src/lib/night.ts` rather than hardcoded for one location; in A Coruña, astronomical darkness
+arrives at 23:32 and the radiant, circumpolar at this latitude, climbs from 13° to 56° by 05:00.
 
-## Il materiale: liquid glass
+## The material: liquid glass
 
-Definito interamente in `globals.css`, in tre livelli:
+Defined entirely in `globals.css`, in three layers:
 
-- `.glass` — la superficie principale. Rifrazione (`backdrop-filter: blur + saturate`), un corpo
-  con tinta direzionale più chiaro dove batte la luce, un bordo speculare di 1px disegnato con una
-  maschera (brillante in alto a sinistra, quasi invisibile in basso a destra) e un'ombra ambientale
-  che stacca il pannello dal fondo.
-- `.glass-live` — aggiunge il riflesso speculare che ruota lentamente. Riservato a countdown e
-  bussola: se lo mettessi ovunque la pagina luccicherebbe tutta.
-- `.glass-inset` — per i pannelli dentro un altro pannello di vetro. **Senza** `backdrop-filter`:
-  vetro dietro vetro rifrange un layer già sfocato, costa un secondo passaggio GPU per elemento e
-  intorbida il risultato.
+- `.glass` — the main surface. Refraction (`backdrop-filter: blur + saturate`), a body tint that's
+  brighter where the light hits, a 1px specular rim drawn with a mask (bright top-left, almost
+  invisible bottom-right), and an ambient shadow that lifts the panel off the background.
+- `.glass-live` — adds a slowly rotating specular sweep. Reserved for the countdown and the
+  compass: putting it everywhere would make the whole page shimmer.
+- `.glass-inset` — for panels nested inside another glass panel. **No** `backdrop-filter`: glass
+  behind glass re-refracts an already-blurred layer, costing a second GPU pass per element while
+  muddying the result.
 
-Il vetro ha bisogno di qualcosa da rifrangere: `AuroraBackground` è un tramonto atlantico in
-movimento (tre campi luminosi alla deriva, un bagliore caldo basso sull'orizzonte, una grana fine
-che evita il banding su OLED). È CSS puro, animato dal compositor, così non ruba main thread al
-countdown.
+Glass needs something to refract: `AuroraBackground` is a drifting Atlantic dusk (three light
+fields adrift, a warm glow low on the horizon, fine grain to avoid banding on OLED). It's pure CSS,
+animated on the compositor, so it never steals main-thread time from the countdown.
 
-I token shadcn (`--card`, `--primary`, `--muted-foreground`…) sono mappati sulla palette coastal,
-quindi ogni primitiva Radix eredita i colori giusti senza override sparsi.
+The shadcn tokens (`--card`, `--primary`, `--muted-foreground`…) are mapped onto the coastal
+palette, so every Radix primitive inherits the right colours without scattered overrides.
 
-## Animazioni
+## Animations
 
-Molle, non curve: ogni sezione entra con un reveal condiviso (sale, si mette a fuoco, si assesta)
-in stagger dal contenitore. Il countdown ha cifre che ruotano verticalmente una per una. Le card dei
-punti hanno un riflesso speculare che segue il dito. Al cambio di fase parte un toast (sonner) e,
-sulle due transizioni che riguardano gli occhi, una vibrazione. Tutto rispetta
+Springs, not curves: every section enters with a shared reveal (rises, sharpens, settles),
+staggered from its container. The countdown's digits roll vertically one at a time. Spot cards
+carry a specular highlight that follows the pointer. A phase change fires a toast (sonner) and, on
+the two transitions that affect the eyes, a vibration. Everything respects
 `prefers-reduced-motion`.
 
-## Scelte tecniche
+## Technical choices
 
-**Orari.** Le fasi sono definite come ora "da orologio" di `Europe/Madrid` e convertite una sola
-volta in istanti UTC (`zonedWallTimeToUtc`, DST-aware via `Intl`). Se il telefono ha un altro fuso,
-l'app lo segnala ma continua a mostrare gli orari di A Coruña.
+**Times.** Every city's phases are defined as wall-clock time in *that city's own* timezone and
+converted once into UTC instants (`zonedWallTimeToUtc`, DST-aware via `Intl`). If the phone is on a
+different timezone the app flags it, but keeps showing the selected city's own local times.
 
-**Posizione del Sole.** Calcolata realmente (`src/lib/sun.ts`), non hardcoded: al massimo restituisce
-**11.96° di altezza e azimut 279.1°**, coerente con i dati forniti. Prima e dopo l'eclissi la bussola
-mostra la direzione del massimo (è quella che serve per scegliere il punto); durante l'eclissi mostra
-la posizione reale, aggiornata ogni secondo.
+**Sun position.** Genuinely computed (`src/lib/sun.ts`), never hardcoded: for A Coruña at maximum
+it returns **11.96° altitude, azimuth 279.1°**, matching the source data. Before and after the
+eclipse the compass points at the direction of maximum (that's what matters for picking a spot);
+during the eclipse it shows the real-time position, updated every second.
 
-**Bussola.** Usa `webkitCompassHeading` su iOS (con richiesta esplicita di permesso) e
-`deviceorientationabsolute` altrove, con smoothing circolare. Senza sensori la rosa resta con il
-Nord in alto e la direzione del Sole è comunque indicata.
+**Compass.** Uses `webkitCompassHeading` on iOS (with an explicit permission prompt) and
+`deviceorientationabsolute` elsewhere, with circular smoothing. Without sensors, the rose stays
+North-up and the Sun's direction is still shown.
 
-**Sicurezza.** La pill in basso è sempre visibile e cambia colore e testo con la fase: giallo
-("occhiali obbligatori"), bianco durante la totalità con i secondi che restano, arancione appena la
-totalità finisce. Toccandola si apre un Drawer con le quattro regole complete, presenti anche come
-card in pagina. È volutamente l'unico elemento a fondo pieno e non di vetro: in pieno sole la
-leggibilità viene prima del materiale.
+**Countdown sizing.** The countdown shares its row with the live Sun/Moon dial, so its available
+width is never the full screen. Its wrapper is a CSS `@container`, and every
+`--text-countdown-*` token is sized in `cqw` — percent of that container's own width, not the
+viewport — with the pair/triple/quad tiers solved algebraically (`npm run verify:countdown-fit`)
+so digits, gaps and unit labels always add up to (container width − a small safety margin), on any
+phone from 320px to 430px wide, instead of a value tuned by eye against one test device.
 
-**Meteo.** `src/lib/weather.ts` è il punto di innesto: oggi restituisce il mock di `eventData.ts`,
-domani basta mappare la risposta di un'API (es. Open-Meteo, endpoint già documentato nel file) sul
-tipo `WeatherSnapshot` e mettere `isMock: false`. Le nubi basse pesano il doppio nella valutazione,
-perché con il Sole a 12° sono quelle che rovinano l'osservazione.
+**Safety.** The bottom pill is always visible and changes colour and text with the phase: yellow
+("glasses required"), white during totality with the seconds remaining, orange as soon as totality
+ends. Tapping it opens a Drawer with the four full rules, also present as a card on the page. It's
+deliberately the one element that stays solid rather than glass: in direct sunlight, legibility
+comes before material.
 
-**Offline.** Il service worker (`public/sw.js`) mette in cache lo shell dell'app: dopo la prima
-visita funziona senza rete, che è la condizione probabile su una scogliera a O Portiño.
+**Weather.** `src/lib/weather.ts` is the integration seam: today it returns a per-city mock, and
+wiring up a real provider (e.g. Open-Meteo, endpoint documented in the file) only means mapping its
+response onto the `WeatherSnapshot` type and setting `isMock: false`. Low cloud is weighted double
+in the assessment, because with the Sun this low it's what actually ruins the view.
 
-## Nota sui punti di osservazione
+**Offline.** The service worker (`public/sw.js`) caches the app shell: after the first visit it
+keeps working with no signal at all, the likely condition on a cliff at O Portiño.
 
-L'elenco non è una garanzia di visibilità. I punti sono ordinati per apertura dell'orizzonte a Ovest
-(`open` / `partial` / `limited`): O Portiño e Monte de San Pedro guardano l'Atlantico aperto, Riazor e
-Orzán sono comode ma orientate a Nord-Ovest, O Parrote è accessibile ma ha la città davanti. Ogni card
-ripete l'avviso di verificare l'orizzonte sul posto, e una sezione dedicata spiega cosa fare se il
-punto scelto risulta coperto.
+**Touch targets.** The city and language picker chips in the header are the app's primary
+navigation controls, so they get a real 44px touch target (`h-11`) rather than just enough padding
+to look right — a WCAG 2.5.5 / Apple HIG minimum that matters more, not less, when the app is used
+outdoors with imprecise finger contact.
+
+## A note on observation spots
+
+The list isn't a guarantee of visibility. Spots are ranked by how open the western horizon is
+(`open` / `partial` / `limited`): O Portiño and Monte de San Pedro face the open Atlantic, Riazor
+and Orzán are convenient but face Northwest, O Parrote is accessible but has the city in front of
+it. Every card repeats the warning to verify the horizon on site, and a dedicated section explains
+what to do if the chosen spot turns out to be blocked.

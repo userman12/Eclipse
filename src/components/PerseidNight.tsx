@@ -125,9 +125,9 @@ export default function PerseidNight({ city }: { city: City }) {
                 <span className="numeric text-muted-foreground text-[0.6rem]">
                   {point.altitude}°
                 </span>
-                <div className="bg-moon/5 flex h-20 w-full items-end overflow-hidden rounded-md">
+                <div className="bg-moon/5 flex h-20 w-full items-end overflow-hidden rounded-lg">
                   <motion.div
-                    className="from-deep to-corona/70 w-full rounded-md bg-gradient-to-t"
+                    className="from-deep to-corona/70 w-full rounded-lg bg-gradient-to-t"
                     initial={{ height: 0 }}
                     whileInView={{ height: `${(point.altitude / peakAltitude) * 100}%` }}
                     viewport={{ once: true }}

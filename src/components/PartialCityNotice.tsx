@@ -8,7 +8,7 @@ import { cityLabel, fill } from '@/lib/i18n';
 import { useCopy } from '@/lib/LanguageProvider';
 
 /**
- * What the Totalità and Cielo tabs show instead of their real content when
+ * What the Totality and Sky tabs show instead of their real content when
  * the selected city never reaches totality. Both depend on the Sun being
  * fully covered — a 76-second script to follow, a sky dark enough for
  * planets to appear — neither of which happens during even a 99.9% partial

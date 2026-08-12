@@ -28,7 +28,7 @@ export default function EclipseHero({
   onOpenScript,
 }: {
   state: EclipseState;
-  /** Lets the live box jump to the full script in the Totalità tab. */
+  /** Lets the live box jump to the full script in the Totality tab. */
   onOpenScript?: () => void;
 }) {
   const { lang, t } = useCopy();

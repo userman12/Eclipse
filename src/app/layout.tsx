@@ -24,7 +24,7 @@ const fraunces = Fraunces({
 export const metadata: Metadata = {
   title: 'Coruña Eclipse Navigator',
   description:
-    'Eclissi di Sole del 12 agosto 2026, calcolata per 16 città da A Coruña a Londra: dove andare, dove guardare, quanto manca e quando è sicuro togliere gli occhiali.',
+    'A live guide to the 12 August 2026 solar eclipse across 16 verified cities, from totality in A Coruña and Reykjavík to the deep partial phases in London, Paris and Rome: where to go, where to look, how much time is left, and when it’s safe to remove your glasses.',
   applicationName: 'Coruña Eclipse Navigator',
   // Relative on purpose: the app has a single route, so these resolve
   // correctly both at the site root (local dev) and under a GitHub Pages

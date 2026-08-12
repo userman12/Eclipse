@@ -79,7 +79,13 @@ export default function EclipseHero({
 
       <GlassCard live>
         <CardContent>
-          <div className="flex items-start justify-between gap-3">
+          {/* items-center, not items-start: EclipseDial (icon + percentage
+              + label, ~109px tall) is taller than the countdown's own
+              content, so top-aligning left the digits sitting high with a
+              dead gap beneath them before the progress bar. Centering the
+              two blocks against each other uses that space instead of
+              leaving it empty. */}
+          <div className="flex items-center justify-between gap-3">
             {/* A container-query context: the countdown's digits are sized
                 in cqw (percent of THIS box's actual width), not vw (percent
                 of the full viewport). vw has no way to know EclipseDial and
